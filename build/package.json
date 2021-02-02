@@ -1,0 +1,26 @@
+{
+  "name": "@aesoper/normal-utils",
+  "version": "0.1.0",
+  "description": "normal-utils utils",
+  "main": "NormalUtils.es.js",
+  "types": "index.d.ts",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/aesoper101/normal-utils.git"
+  },
+  "keywords": [
+    "normal-utils",
+    "utils",
+    "dom",
+    "event"
+  ],
+  "author": "aesoper",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/aesoper101/normal-utils/issues"
+  },
+  "homepage": "https://github.com/aesoper101/normal-utils#readme"
+}
