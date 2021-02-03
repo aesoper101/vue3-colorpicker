@@ -45,10 +45,6 @@ import { DOMUtils, DragEventOptions } from "@aesoper/normal-utils";
 export default defineComponent({
   name: "Light",
   props: {
-    color: {
-      type: String,
-      default: "#000000"
-    },
     vertical: {
       type: Boolean,
       default: false
@@ -147,7 +143,7 @@ export default defineComponent({
           barHandle.value?.offsetHeight / 2
         );
       }
-      return 7;
+      return 0;
     };
 
     const updatePosition = () => {

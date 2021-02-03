@@ -930,6 +930,11 @@
   resolved "https://registry.npm.taobao.org/@nodelib/fs.stat/download/@nodelib/fs.stat-1.1.3.tgz?cache=0&sync_timestamp=1609074554588&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2F%40nodelib%2Ffs.stat%2Fdownload%2F%40nodelib%2Ffs.stat-1.1.3.tgz#2b5a3ab3f918cca48a8c754c08168e3f03eba61b"
   integrity sha1-K1o6s/kYzKSKjHVMCBaOPwPrphs=
 
+"@popperjs/core@^2.6.0":
+  version "2.6.0"
+  resolved "https://registry.npm.taobao.org/@popperjs/core/download/@popperjs/core-2.6.0.tgz#f022195afdfc942e088ee2101285a1d31c7d727f"
+  integrity sha1-8CIZWv38lC4IjuIQEoWh0xx9cn8=
+
 "@rollup/plugin-alias@^3.1.1":
   version "3.1.1"
   resolved "https://registry.npm.taobao.org/@rollup/plugin-alias/download/@rollup/plugin-alias-3.1.1.tgz#bb96cf37fefeb0a953a6566c284855c7d1cd290c"
@@ -1028,6 +1033,25 @@
     "@types/connect" "*"
     "@types/node" "*"
 
+"@types/color-convert@*":
+  version "2.0.0"
+  resolved "https://registry.npm.taobao.org/@types/color-convert/download/@types/color-convert-2.0.0.tgz#8f5ee6b9e863dcbee5703f5a517ffb13d3ea4e22"
+  integrity sha1-j17muehj3L7lcD9aUX/7E9PqTiI=
+  dependencies:
+    "@types/color-name" "*"
+
+"@types/color-name@*":
+  version "1.1.1"
+  resolved "https://registry.npm.taobao.org/@types/color-name/download/@types/color-name-1.1.1.tgz#1c1261bbeaa10a8055bbc5d8ab84b7b2afc846a0"
+  integrity sha1-HBJhu+qhCoBVu8XYq4S3sq/IRqA=
+
+"@types/color@^3.0.1":
+  version "3.0.1"
+  resolved "https://registry.npm.taobao.org/@types/color/download/@types/color-3.0.1.tgz#2900490ed04da8116c5058cd5dba3572d5a25071"
+  integrity sha1-KQBJDtBNqBFsUFjNXbo1ctWiUHE=
+  dependencies:
+    "@types/color-convert" "*"
+
 "@types/connect-history-api-fallback@*":
   version "1.3.3"
   resolved "https://registry.npm.taobao.org/@types/connect-history-api-fallback/download/@types/connect-history-api-fallback-1.3.3.tgz#4772b79b8b53185f0f4c9deab09236baf76ee3b4"
@@ -1119,6 +1143,18 @@
   version "7.0.7"
   resolved "https://registry.npm.taobao.org/@types/json-schema/download/@types/json-schema-7.0.7.tgz?cache=0&sync_timestamp=1611095982716&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2F%40types%2Fjson-schema%2Fdownload%2F%40types%2Fjson-schema-7.0.7.tgz#98a993516c859eb0d5c4c8f098317a9ea68db9ad"
   integrity sha1-mKmTUWyFnrDVxMjwmDF6nqaNua0=
+
+"@types/lodash.debounce@^4.0.6":
+  version "4.0.6"
+  resolved "https://registry.npm.taobao.org/@types/lodash.debounce/download/@types/lodash.debounce-4.0.6.tgz#c5a2326cd3efc46566c47e4c0aa248dc0ee57d60"
+  integrity sha1-xaIybNPvxGVmxH5MCqJI3A7lfWA=
+  dependencies:
+    "@types/lodash" "*"
+
+"@types/lodash@*":
+  version "4.14.168"
+  resolved "https://registry.npm.taobao.org/@types/lodash/download/@types/lodash-4.14.168.tgz?cache=0&sync_timestamp=1610980846329&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2F%40types%2Flodash%2Fdownload%2F%40types%2Flodash-4.14.168.tgz#fe24632e79b7ade3f132891afff86caa5e5ce008"
+  integrity sha1-/iRjLnm3rePxMoka//hsql5c4Ag=
 
 "@types/mime@^1":
   version "1.3.2"
@@ -3162,6 +3198,13 @@ create-hmac@^1.1.0, create-hmac@^1.1.4, create-hmac@^1.1.7:
     safe-buffer "^5.0.1"
     sha.js "^2.4.8"
 
+cross-env@^7.0.3:
+  version "7.0.3"
+  resolved "https://registry.npm.taobao.org/cross-env/download/cross-env-7.0.3.tgz#865264b29677dc015ba8418918965dd232fc54cf"
+  integrity sha1-hlJkspZ33AFbqEGJGJZd0jL8VM8=
+  dependencies:
+    cross-spawn "^7.0.1"
+
 cross-spawn@^3.0.0:
   version "3.0.1"
   resolved "https://registry.npm.taobao.org/cross-spawn/download/cross-spawn-3.0.1.tgz?cache=0&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2Fcross-spawn%2Fdownload%2Fcross-spawn-3.0.1.tgz#1256037ecb9f0c5f79e3d6ef135e30770184b982"
@@ -3190,7 +3233,7 @@ cross-spawn@^6.0.0, cross-spawn@^6.0.5:
     shebang-command "^1.2.0"
     which "^1.2.9"
 
-cross-spawn@^7.0.0:
+cross-spawn@^7.0.0, cross-spawn@^7.0.1:
   version "7.0.3"
   resolved "https://registry.npm.taobao.org/cross-spawn/download/cross-spawn-7.0.3.tgz?cache=0&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2Fcross-spawn%2Fdownload%2Fcross-spawn-7.0.3.tgz#f73a85b9d5d41d045551c177e2882d4ac85728a6"
   integrity sha1-9zqFudXUHQRVUcF34ogtSshXKKY=
@@ -9614,10 +9657,10 @@ vue-template-es2015-compiler@^1.9.0:
   resolved "https://registry.npm.taobao.org/vue-template-es2015-compiler/download/vue-template-es2015-compiler-1.9.1.tgz#1ee3bc9a16ecbf5118be334bb15f9c46f82f5825"
   integrity sha1-HuO8mhbsv1EYvjNLsV+cRvgvWCU=
 
-vue3-normal-directive@^0.1.0:
-  version "0.1.0"
-  resolved "https://registry.npmjs.org/vue3-normal-directive/-/vue3-normal-directive-0.1.0.tgz#0a4b202ad018d62aba95006fffe02708dc06729c"
-  integrity sha512-LLIvS29KeWKqLl5/AJgi7iFNC2maJvayZzWvlDYCu0ONTJxIWAMMwmrpWLcLWsidzt8TXkI/Cj2yPPIv/SDM+w==
+vue3-normal-directive@^0.1.1:
+  version "0.1.1"
+  resolved "https://registry.npm.taobao.org/vue3-normal-directive/download/vue3-normal-directive-0.1.1.tgz?cache=0&sync_timestamp=1612335047671&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2Fvue3-normal-directive%2Fdownload%2Fvue3-normal-directive-0.1.1.tgz#b013050d01e2533a60c76e8fb1476d051eeb6296"
+  integrity sha1-sBMFDQHiUzpgx26PsUdtBR7rYpY=
   dependencies:
     body-scroll-lock "^3.1.5"
     clipboard "^2.0.6"
@@ -9627,10 +9670,16 @@ vue3-normal-directive@^0.1.0:
     vue-class-component "^8.0.0-0"
     vue-router "^4.0.0-0"
 
-vue3-storage@^0.1.8:
-  version "0.1.8"
-  resolved "https://registry.npm.taobao.org/vue3-storage/download/vue3-storage-0.1.8.tgz#14e1c5914e534f316a494ffe8ffd9f092cebdc34"
-  integrity sha1-FOHFkU5TTzFqSU/+j/2fCSzr3DQ=
+vue3-storage@^0.1.9:
+  version "0.1.9"
+  resolved "https://registry.npm.taobao.org/vue3-storage/download/vue3-storage-0.1.9.tgz#4c825259207fdf0644142fd215d972a967ad4615"
+  integrity sha1-TIJSWSB/3wZEFC/SFdlyqWetRhU=
+  dependencies:
+    core-js "^3.6.5"
+    cross-env "^7.0.3"
+    vue "^3.0.0"
+    vue-class-component "^8.0.0-0"
+    vue-router "^4.0.0-0"
 
 vue@^3.0.0:
   version "3.0.5"

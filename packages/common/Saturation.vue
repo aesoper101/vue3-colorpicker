@@ -87,8 +87,8 @@ export default defineComponent({
     const updatePosition = () => {
       if (instance) {
         const el = instance.vnode.el;
-        cursorLeft.value = (currentHsv.s * 100 * el?.clientWidth) / 100;
-        cursorTop.value = ((100 - currentHsv.v * 100) * el?.clientHeight) / 100;
+        cursorLeft.value = currentHsv.s * el?.clientWidth;
+        cursorTop.value = (1 - currentHsv.v) * el?.clientHeight;
       }
     };
 
@@ -103,8 +103,9 @@ export default defineComponent({
         left = clamp(left, 0, rect.width);
         top = clamp(top, 0, rect.height);
 
-        const saturation = Number((left / rect.width).toFixed(4));
-        const bright = Number(clamp(-(top / rect.height) + 1, 0, 1).toFixed(4));
+        const saturation = Math.round((left / rect.width) * 100) / 100;
+        const bright =
+          Math.round(clamp(-(top / rect.height) + 1, 0, 1) * 100) / 100;
 
         cursorLeft.value = left;
         cursorTop.value = top;
@@ -146,6 +147,7 @@ export default defineComponent({
       () => props.value,
       (value: number) => {
         currentHsv.v = value;
+        updatePosition();
       }
     );
 
@@ -153,12 +155,6 @@ export default defineComponent({
       () => props.saturation,
       (saturation: number) => {
         currentHsv.s = saturation;
-      }
-    );
-
-    watch(
-      () => currentHsv,
-      () => {
         updatePosition();
       }
     );

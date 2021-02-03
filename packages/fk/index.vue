@@ -8,30 +8,29 @@
         </span>
       </div>
       <compact @change="onCompactChange" v-if="!advancePanelShow" />
-
       <saturation
-        :saturation="currentColor.saturation"
-        :hue="currentColor.hue"
-        :value="currentColor.value"
+        :saturation="currentColor.hsv.s"
+        :hue="currentColor.hsv.h"
+        :value="currentColor.hsv.v"
         @change="onSaturationChange"
         v-if="advancePanelShow"
       />
-      <light
-        :light="currentColor.light"
-        :saturation="currentColor.hslSaturation"
-        :hue="currentColor.hue"
-        @change="onLightChange"
-        v-if="!advancePanelShow && !disableLight"
-      />
       <hue
-        :hue="currentColor.hue"
+        :hue="currentColor.hsv.h"
         @change="onHueChange"
         v-if="advancePanelShow && !disableHue"
       />
+      <light
+        :hue="currentColor.hsl.h"
+        :light="currentColor.hsl.l * 100"
+        :saturation="currentColor.hsl.s * 100"
+        @change="onLightChange"
+        v-if="!advancePanelShow && !disableLight"
+      />
       <alpha
-        :color="currentColor.color"
+        :color="currentColor.hex8"
         @change="onAlphaChange"
-        v-model:alpha="currentColor.alpha"
+        :alpha="currentColor.alpha"
         v-if="!disableAlpha"
       />
 
@@ -39,14 +38,15 @@
         <div class="current-color transparent">
           <div
             class="color-cube"
-            :style="{ background: currentColor.color }"
+            :style="{ background: currentColor.hex8 }"
           ></div>
         </div>
         <span class="hexColor-prefix">#</span>
         <input
           class="hexColor-input"
-          v-model="currentColorInput"
-          @input="onInputChange"
+          ref="colorInput"
+          :value="currentColor.hex.replace('#', '')"
+          @blur="onInputChange"
         />
         <div class="action">
           <div class="copy-btn">复制</div>
@@ -54,40 +54,197 @@
       </div>
 
       <history
-        v-if="!disableHistory"
         :color-list="storageColorList"
         @change="onCompactChange"
+        v-if="!disableHistory && storageColorList.length > 0"
       />
     </div>
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, SetupContext } from "vue";
+import { defineComponent, PropType, ref, watch, toRaw, onMounted } from "vue";
 import Hue from "../common/Hue.vue";
-import { ColorPickerProps, useColorSetup } from "../color";
 import Compact from "../common/Compact.vue";
 import Saturation from "../common/Saturation.vue";
 import Alpha from "../common/Alpha.vue";
 import Light from "../common/Light.vue";
 import History from "../common/History.vue";
+import { Color, ColorInput, parseColor } from "../color";
+import { useStorage } from "vue3-storage";
+import debounce from "lodash.debounce";
+
+const debounceFn = debounce(
+  (fn: Function) => {
+    fn();
+  },
+  200,
+  {
+    leading: true,
+    trailing: false
+  }
+);
 
 export default defineComponent({
-  name: "Fk",
-  components: { History, Light, Alpha, Saturation, Compact, Hue },
+  name: "TestPicker",
+  components: { Compact, Light, Alpha, Saturation, Hue, History },
   props: {
     color: {
-      type: String,
+      type: [String, Object] as PropType<ColorInput>,
       default: "#000000"
+    },
+    format: {
+      type: String,
+      default: "hex8"
     },
     disableAlpha: Boolean,
     disableLight: Boolean,
     disableHue: Boolean,
     disableHistory: Boolean
   },
-  setup(props: ColorPickerProps, ctx: SetupContext) {
-    const apis = useColorSetup(props, ctx);
-    return { ...apis };
+  emits: ["update:color", "change"],
+  setup(props, { emit }) {
+    const currentColor = ref<Color>(parseColor(props.color));
+    const _oldHue = ref(currentColor.value.oldHue);
+    const advancePanelShow = ref(false);
+
+    const storage = useStorage();
+    const storageColorList = ref<string[]>([]);
+
+    const colorInput = ref<HTMLInputElement | null>(null);
+
+    const onBack = () => {
+      advancePanelShow.value = false;
+    };
+
+    const onStorageColor = () => {
+      storageColorList.value = storageColorList.value.filter(value => {
+        return value !== currentColor.value.hex8;
+      });
+      if (storageColorList.value.length >= 6) {
+        storageColorList.value.shift();
+      }
+      storageColorList.value.push(currentColor.value.hex8);
+      storage?.setStorage({
+        key: "colorList",
+        data: storageColorList.value
+      });
+    };
+
+    const onInitColorList = () => {
+      storageColorList.value =
+        storage?.getStorageSync<string[]>("colorList") || [];
+    };
+
+    const doOnChange = (data: any, oldHue?: number): void => {
+      currentColor.value = parseColor(data, oldHue);
+      debounceFn(onStorageColor);
+    };
+
+    const doUpdate = () => {
+      emit("update:color", currentColor.value.hex8);
+      emit("change", currentColor.value);
+    };
+
+    const onCompactChange = (color: string) => {
+      if (color === "advance") {
+        advancePanelShow.value = true;
+      } else {
+        _oldHue.value = currentColor.value.hsl.h;
+        doOnChange(color);
+        doUpdate();
+      }
+    };
+
+    const onLightChange = (light: number) => {
+      doOnChange(
+        {
+          h: currentColor.value.hsl.h,
+          s: currentColor.value.hsl.s,
+          l: light / 100,
+          a: currentColor.value.hsl.a,
+          source: "light"
+        },
+        currentColor.value.hsl.h
+      );
+      doUpdate();
+    };
+
+    const onAlphaChange = (alpha: number) => {
+      doOnChange(
+        {
+          h: currentColor.value.hsl.h,
+          s: currentColor.value.hsl.s,
+          l: currentColor.value.hsl.l,
+          a: alpha,
+          source: "alpha"
+        },
+        currentColor.value.hsl.h
+      );
+      doUpdate();
+    };
+
+    const onSaturationChange = (saturation: number, bright: number) => {
+      doOnChange(
+        {
+          h: currentColor.value.hsv.h,
+          s: saturation,
+          v: bright,
+          a: currentColor.value.hsv.a,
+          source: "saturation"
+        },
+        currentColor.value.hsv.h
+      );
+      doUpdate();
+    };
+
+    const onHueChange = (hue: number) => {
+      const { s: saturation, v: bright, a: alpha } = currentColor.value.hsv;
+      doOnChange(
+        {
+          h: hue,
+          s: saturation,
+          v: bright,
+          a: alpha,
+          source: "hue"
+        },
+        hue
+      );
+
+      doUpdate();
+    };
+
+    const onInputChange = (event: FocusEvent) => {
+      const target = event.target as HTMLInputElement;
+      const hex = target.value;
+      doOnChange({ hex: hex });
+      doUpdate();
+    };
+
+    watch(
+      () => props.color,
+      (newVal: ColorInput) => {
+        doOnChange(toRaw(newVal));
+      }
+    );
+
+    onMounted(() => {
+      onInitColorList();
+    });
+
+    return {
+      colorInput,
+      currentColor,
+      storageColorList,
+      onBack,
+      advancePanelShow,
+      onCompactChange,
+      onLightChange,
+      onAlphaChange,
+      onSaturationChange,
+      onHueChange,
+      onInputChange
+    };
   }
 });
 </script>

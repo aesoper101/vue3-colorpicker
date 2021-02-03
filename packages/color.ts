@@ -1,214 +1,139 @@
-import { ref, reactive, toRaw, watch, onMounted, SetupContext } from "vue";
-// eslint-disable-next-line @typescript-eslint/ban-ts-ignore
-// @ts-ignore
-import tinycolor from "tinycolor2";
-import { useStorage } from "vue3-storage";
+import tinycolor, { Instance } from "tinycolor2";
+import { isDef, isNull } from "@aesoper/normal-utils";
 
-interface Color {
-  color: string;
-  hue: number;
-  light: number;
-  saturation: number;
-  hslSaturation: number;
-  value: number;
+export interface Alpha {
+  a: number;
+}
+
+export interface PRGB {
+  r: string;
+  g: string;
+  b: string;
+}
+
+export interface PRGBA extends PRGB, Alpha {}
+
+export interface RGB {
+  r: number;
+  g: number;
+  b: number;
+}
+
+export interface RGBA extends RGB, Alpha {}
+
+export interface HSL {
+  h: number;
+  s: number;
+  l: number;
+}
+
+export interface HSLA extends HSL, Alpha {}
+
+export interface HSV {
+  h: number;
+  s: number;
+  v: number;
+}
+
+export interface HSVA extends HSV {
+  a: number;
+}
+
+export interface ColorInstance {
+  hex?: string;
+  hex8?: string;
+  hsl?: HSLA;
+  hsv?: HSVA;
+  rgb?: RGBA;
+  alpha?: number;
+  source?: string;
+  oldHue?: number;
+}
+
+export interface Color {
+  hex: string;
+  hex8: string;
+  hsl: HSLA;
+  hsv: HSVA;
+  rgb: RGBA;
   alpha: number;
+  source: string;
+  oldHue: number;
 }
 
-export interface ColorPickerProps {
-  color: string;
-  disableAlpha: boolean;
-  disableLight: boolean;
-  disableHue: boolean;
-  disableHistory: boolean;
+type ColorInputWithoutInstance =
+  | string
+  | PRGB
+  | PRGBA
+  | RGB
+  | RGBA
+  | HSL
+  | HSLA
+  | HSV
+  | HSVA;
+
+export type ColorInput = ColorInstance | ColorInputWithoutInstance;
+
+export class ColorClass {
+  protected instance: Instance = tinycolor("#000000");
 }
 
-export const useColorSetup = (props: ColorPickerProps, ctx: SetupContext) => {
-  const storage = useStorage();
-  const storageColorList = ref<string[]>([]);
-  const { emit } = ctx;
-  const advancePanelShow = ref(false);
-  const currentColor = reactive<Color>({
-    color: props.color,
-    hue: 0,
-    light: 0,
-    saturation: 0,
-    hslSaturation: 0,
-    value: 0,
-    alpha: 1
-  });
-  const currentColorInput = ref(props.color.replace("#", ""));
+export const parseColor = (data: any, oldHue?: number): Color => {
+  let instance: Instance;
 
-  const onCompactChange = (color: string) => {
-    if (color === "advance") {
-      advancePanelShow.value = true;
-    } else {
-      const colorInstance = tinycolor(color);
-      const hsv = colorInstance.toHsv();
+  if (isDef(data) || isNull(data)) {
+    data = "#000000";
+  }
 
-      currentColor.color = color;
-      currentColor.hue = colorInstance.toHsv().h;
-      currentColor.saturation = hsv.s;
-      currentColor.value = hsv.v;
-      currentColor.light = colorInstance.toHsl().l * 100;
-      currentColor.alpha = hsv.a;
-      currentColor.hslSaturation = colorInstance.toHsl().s * 100;
-      emit("update:color", currentColor.color);
-      emit("change", currentColor.color, toRaw(currentColor));
-    }
-  };
+  if (data && data.hsl) {
+    instance = tinycolor(data.hsl);
+  } else if (data && data.hex && data.hex.length > 0) {
+    instance = tinycolor(data.hex);
+  } else if (data && data.hex8 && data.hex8.length > 0) {
+    instance = tinycolor(data.hex8);
+  } else if (data && data.hsv) {
+    instance = tinycolor(data.hsv);
+  } else if (data && data.rgba) {
+    instance = tinycolor(data.rgba);
+  } else if (data && data.rgb) {
+    instance = tinycolor(data.rgb);
+  } else {
+    instance = tinycolor(data);
+  }
 
-  const onHueChange = (hue: number) => {
-    currentColor.hue = hue;
-    const colorInstance = tinycolor({
-      h: hue,
-      s: currentColor.saturation,
-      v: currentColor.value,
-      a: currentColor.alpha
-    });
+  const hsl = instance.toHsl();
+  const hsv = instance.toHsv();
 
-    currentColor.color = colorInstance.toHex8String();
-    emit("update:color", currentColor.color);
-    emit("change", currentColor.color, toRaw(currentColor));
-  };
+  if (hsl.s === 0) {
+    hsv.h = hsl.h = data.h || (data.hsl && data.hsl.h) || oldHue || 0;
+  }
 
-  const onAlphaChange = (alpha: number) => {
-    currentColor.alpha = alpha;
-    const colorInstance = tinycolor({
-      h: currentColor.hue,
-      s: currentColor.saturation,
-      v: currentColor.value,
-      a: currentColor.alpha
-    });
-    currentColor.color = colorInstance.toHex8String();
-    emit("update:color", currentColor.color);
-    emit("change", currentColor.color, toRaw(currentColor));
-  };
+  if (hsv.h === 0 || hsl.h === 0) {
+    hsv.h = hsl.h = data.h || oldHue || data.oldHue || 0;
+  }
 
-  const onLightChange = (light: number) => {
-    const colorInstance = tinycolor({
-      h: currentColor.hue,
-      s: currentColor.saturation,
-      v: currentColor.value,
-      a: currentColor.alpha
-    });
-    const hsl = colorInstance.toHsl();
-
-    hsl.l = light / 100;
-
-    currentColor.light = light;
-    currentColor.color = tinycolor(hsl).toHex8String();
-
-    emit("update:color", currentColor.color);
-    emit("change", currentColor.color, toRaw(currentColor));
-  };
-
-  const onSaturationChange = (saturation: number, bright: number) => {
-    currentColor.saturation = saturation;
-    currentColor.value = bright;
-    const colorInstance = tinycolor({
-      h: currentColor.hue,
-      s: currentColor.saturation,
-      v: currentColor.value,
-      a: currentColor.alpha
-    });
-
-    const hsl = colorInstance.toHsl();
-
-    currentColor.light = hsl.l * 100;
-    currentColor.color = colorInstance.toHex8String();
-
-    emit("update:color", currentColor.color);
-    emit("change", currentColor.color, toRaw(currentColor));
-  };
-
-  const onBack = () => {
-    advancePanelShow.value = false;
-  };
-
-  const onInputChange = (e: Event) => {
-    const target = e.target as HTMLInputElement;
-    const value = target.value.replace("#", "");
-    const color = "#" + value;
-
-    if (tinycolor(value).isValid()) {
-      const format = tinycolor(value).getFormat();
-      if (format === "hex" || format === "hex8") {
-        currentColor.color = color;
-      } else {
-        target.value = currentColorInput.value;
-      }
-    } else {
-      target.value = currentColorInput.value;
-    }
-  };
-
-  const onInitalize = () => {
-    if (tinycolor(currentColor.color).isValid()) {
-      const colorInstance = tinycolor(currentColor.color);
-      const hsv = colorInstance.toHsv();
-
-      currentColor.hue = hsv.h;
-      currentColor.saturation = hsv.s;
-      currentColor.value = hsv.v;
-      currentColor.light = colorInstance.toHsl().l * 100;
-      currentColor.alpha = hsv.a;
-      currentColor.hslSaturation = colorInstance.toHsl().s * 100;
-    }
-  };
-
-  const onStorageColor = () => {
-    storageColorList.value = storageColorList.value.filter(value => {
-      return value !== currentColor.color;
-    });
-    if (storageColorList.value.length >= 6) {
-      storageColorList.value.shift();
-    }
-    storageColorList.value.push(currentColor.color);
-    storage?.setStorage({
-      key: "colorList",
-      data: storageColorList.value
-    });
-  };
-
-  const onInitColorList = () => {
-    storageColorList.value =
-      storage?.getStorageSync<string[]>("colorList") || [];
-  };
-
-  watch(
-    () => props.color,
-    (color: string) => {
-      if (color && color !== currentColor.color) {
-        currentColor.color = color;
-        onInitalize();
-      }
-    }
-  );
-
-  watch(
-    () => currentColor.color,
-    () => {
-      currentColorInput.value = currentColor.color.replace("#", "");
-      onStorageColor();
-    }
-  );
-
-  onMounted(() => {
-    onInitalize();
-    onInitColorList();
-  });
+  if (hsv.v === 0) {
+    hsv.s = (data.s && data.s) || (data.hsv && data.hsv.s) || 0;
+  }
 
   return {
-    currentColor,
-    advancePanelShow,
-    currentColorInput,
-    onCompactChange,
-    onBack,
-    onHueChange,
-    onLightChange,
-    onSaturationChange,
-    onAlphaChange,
-    onInputChange,
-    storageColorList
+    hsl: {
+      h: Math.round(hsl.h),
+      s: Math.round(hsl.s * 100) / 100,
+      l: Math.round(hsl.l * 100) / 100,
+      a: hsl.a
+    },
+    hex: instance.toHexString().toUpperCase(),
+    hex8: instance.toHex8String().toUpperCase(),
+    rgb: instance.toRgb(),
+    hsv: {
+      h: Math.round(hsv.h),
+      s: Math.round(hsv.s * 100) / 100,
+      v: Math.round(hsv.v * 100) / 100,
+      a: hsl.a
+    },
+    oldHue: data.h || oldHue || hsl.h,
+    source: data.source,
+    alpha: data.a || instance.getAlpha()
   };
 };
