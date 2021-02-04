@@ -1,9 +1,9 @@
 <template>
   <div class="bee-colorPicker__record">
-    <div class="text">最近使用</div>
     <div class="color-list">
       <div
-        class="color-item"
+        class="color-item transparent"
+        :class="{ 'color-item__round': round }"
         v-for="(v, i) in colorList"
         :key="i"
         @click="onClickRecord(v)"
@@ -25,6 +25,10 @@ export default defineComponent({
       default: () => {
         return [];
       }
+    },
+    round: {
+      type: Boolean,
+      default: true
     }
   },
   emits: ["change"],
@@ -68,6 +72,15 @@ export default defineComponent({
       vertical-align: middle;
       margin-right: 1px;
       box-shadow: 3px 0 5px rgba(0, 0, 0, 0.08);
+
+      &__round {
+        border-radius: 50%;
+      }
+
+      &.transparent {
+        background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAwAAAAMCAIAAADZF8uwAAAAGUlEQVQYV2M4gwH+YwCGIasIUwhT25BVBADtzYNYrHvv4gAAAABJRU5ErkJggg==);
+        background-repeat: repeat;
+      }
 
       &:hover {
         transform: scale(1.2);

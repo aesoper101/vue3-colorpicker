@@ -1,10 +1,18 @@
 {
-  "name": "colorpicker",
-  "version": "0.1.0",
+  "name": "vue3-colorpicker",
+  "version": "1.0.0",
+  "description": "A very beautiful color picker",
   "private": false,
   "main": "dist/colorpicker.es.js",
   "module": "dist/colorpicker.es.js",
   "types": "dist/index.d.ts",
+  "author": "aesoper",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/aesoper101/vue3-colorpicker/issues"
+  },
+  "files": ["dist"],
+  "homepage": "https://github.com/aesoper101/vue3-colorpicker#readme",
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
@@ -13,12 +21,14 @@
     "build:version": "node build/gen-version.js",
     "clean:dist": "rimraf dist",
     "pub": "cd dist && npm publish --registry=http://registry.npmjs.org --access public && cd ..",
-    "unpub": "npm unpublish colorpicker --force --registry=http://registry.npmjs.org",
-    "deploy": "rimraf dist && yarn build && gh-pages -d dist"
+    "unpub": "npm unpublish vue3-colorpicker --force --registry=http://registry.npmjs.org",
+    "deploy": "rimraf dist && yarn build && gh-pages -d dist",
+    "pre": "cd dist && yarn link && cd .. && yarn link vue3-colorpicker"
   },
   "dependencies": {
     "@aesoper/normal-utils": "^0.1.2",
     "@popperjs/core": "^2.6.0",
+    "body-scroll-lock": "^3.1.5",
     "core-js": "^3.6.5",
     "lodash.debounce": "^4.0.8",
     "tinycolor2": "^1.4.2",
@@ -26,11 +36,10 @@
     "vue-class-component": "^8.0.0-0",
     "vue-router": "^4.0.0-0",
     "vue3-normal-directive": "^0.1.1",
-    "vue3-storage": "^0.1.9"
+    "vue3-storage": "^0.1.9",
+    "vue3-colorpicker": "^1.0.0"
   },
   "devDependencies": {
-    "@types/lodash.debounce": "^4.0.6",
-    "@types/color": "^3.0.1",
     "@babel/preset-env": "^7.9.5",
     "@babel/preset-typescript": "^7.12.7",
     "@babel/runtime": "^7.12.5",
@@ -40,7 +49,9 @@
     "@rollup/plugin-commonjs": "^17.0.0",
     "@rollup/plugin-node-resolve": "^11.1.0",
     "@rollup/plugin-replace": "^2.3.4",
+    "@types/color": "^3.0.1",
     "@types/fs-extra": "^9.0.6",
+    "@types/lodash.debounce": "^4.0.6",
     "@types/tinycolor2": "^1.4.2",
     "@typescript-eslint/eslint-plugin": "^2.33.0",
     "@typescript-eslint/parser": "^2.33.0",

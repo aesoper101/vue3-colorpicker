@@ -2,11 +2,18 @@ import { App } from "vue";
 import { ClickOutsidePlugin, ClipboardPlugin } from "vue3-normal-directive";
 // import FK from "./fk/index.vue";
 // import Chrome from "./chrome/index.vue";
-// import ColorPicker from "./ColorPicker.vue";
+import PopuColorPicker from "./PopuColorPicker.vue";
 import Vue3Storage from "vue3-storage";
-import TestPicker from "./fk/index.vue";
+import FkColorPicker from "./fk/index.vue";
+import ChromeColorPicker from "./chrome/index.vue";
+import EleColorPicker from "./ele/index.vue";
 
-const components = [TestPicker];
+const components = [
+  FkColorPicker,
+  PopuColorPicker,
+  ChromeColorPicker,
+  EleColorPicker
+];
 
 const install = (app: App) => {
   app.use(ClickOutsidePlugin);

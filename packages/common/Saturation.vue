@@ -1,7 +1,10 @@
 <template>
   <div
     class="bee-saturation"
-    :class="{ 'bee-saturation__chrome': isChrome }"
+    :class="{
+      'bee-saturation__chrome': round,
+      'bee-saturation__hidden': hidden
+    }"
     :style="{ backgroundColor: background }"
   >
     <div class="bee-saturation__white"></div>
@@ -68,7 +71,8 @@ export default defineComponent({
         return value >= 0 && value <= 1;
       }
     },
-    isChrome: Boolean
+    round: Boolean,
+    hidden: Boolean
   },
   emits: ["update:saturation", "update:value", "change"],
   setup(props, { emit }) {
@@ -172,10 +176,13 @@ export default defineComponent({
   height: 125px;
 
   &__chrome {
-    overflow: hidden;
     border-top-left-radius: 5px;
     border-top-right-radius: 5px;
     border-color: transparent;
+  }
+
+  &__hidden {
+    overflow: hidden;
   }
 
   &__white,

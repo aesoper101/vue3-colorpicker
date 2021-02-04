@@ -1,24 +1,131 @@
 # colorpicker
+非常漂亮的一款拾色器,灵感来源于 [凡科建站](https://fkw.com/) 的拾色器。
+同时参照了 [element-plus](https://element-plus.org/#/zh-CN/component/color-picker) 以及 [vue-color](https://github.com/xiaokaike/vue-color) 的思路；
+作为一名纯粹的后端人员,我从来没有想过我竟然来写拾色器这个vue插件。
 
-## Project setup
-```
-yarn install
-```
+![](.\public\1.png)
 
-### Compiles and hot-reloads for development
-```
-yarn serve
-```
+[在线demo演示](https://aesoper101.github.io/vue3-colorpicker/)
 
-### Compiles and minifies for production
+## 安装
 ```
-yarn build
+yarn add vue3-colorpicker 
 ```
 
-### Lints and fixes files
+或者
+
 ```
-yarn lint
+npm install vue3-colorpicker 
 ```
 
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+## 如何使用
+
+### 第一步全局注册
+
+```
+import colorPicker from "vue3-colorpicker";
+import "vue3-colorpicker/bundle.css";
+
+createApp(App)
+  .use(router)
+  .use(colorPicker)
+  .mount("#app");
+```
+
+### 使用组件
+```vue
+<fk-color-picker v-model:color="color" />
+```
+
+![](.\public\2.png)
+
+```vue
+ <chrome-color-picker v-model:color="color" :history-round="true" />
+```
+![](.\public\3.png)
+
+```vue
+<ele-color-picker v-model:color="color" />
+```
+![](.\public\4.png)
+
+```
+ <！-- 有弹出功能的拾色器 -->
+ <popu-color-picker v-model:color="color" />
+```
+![](.\public\5.png)
+
+
+## 数据输入输出
+```js
+
+// 不同格式的数据输入输出
+
+const colors: ColorAttrs = { // 默认的color输出格式
+    "hsl": {
+        "h": 0,
+        "s": 0.56,
+        "l": 0.38,
+        "a": 1
+    },
+    "hex": "#992B2B",
+    "hex8": "#992B2BFF",
+    "rgb": {
+        "r": 153,
+        "g": 43,
+        "b": 43,
+        "a": 1
+    },
+    "hsv": {
+        "h": 0,
+        "s": 0.72,
+        "v": 0.6,
+        "a": 1
+    },
+    "oldHue": 0,
+    "source": "saturation",
+    "alpha": 1
+}
+// or
+const colors = '#194d33'
+// or
+const colors = '#194D33A8'
+// or 
+const colors = { h: 150, s: 0.66, v: 0.30 }
+// or 
+const colors = { r: 255, g: 0, b: 0 }
+
+```
+
+如果你需要一种固定的color值输出格式,您需要给组件的formate属性赋值(除了popu-color-picker);format 允许的类型如下：
+```typescript
+export type ColorFormat =
+  | "rgb"
+  | "prgb"
+  | "hex"
+  | "hex6"
+  | "hex3"
+  | "hex4"
+  | "hex8"
+  | "name"
+  | "hsl"
+  | "hsv";
+```
+如果想让popu-color-picker组件也输出固定格式的color值,需要给popu-color-picker组件的pickerProps属性赋值, pickerProps属性选项跟您填入的mode属性相关;
+mode 的值如下:
+```typescript
+export type PickerMode = "fk" | "chrome" | "ele";
+```
+如果您`mode="chrome"`,则弹出的拾色器为`chrome-color-picker`.此时pickerProps的值即为`chrome-color-picker`组件的属性值。下同
+如果您`mode="fk"`,则弹出的拾色器为`fk-color-picker`. 默认为`fk`
+如果您`mode="ele"`,则弹出的拾色器为`ele-color-picker`.
+
+举例：
+```vue
+<popu-color-picker v-model:color="color" mode="chrome"  :chrome-color-picker="{format: 'hex'}"/>
+```
+说明: 以上组件弹出的拾色器为`chrome-color-picker`, 输出的color格式为 `hex`字符串类型,
+![](.\public\6.png)
+
+
+## 由于写得匆忙，文档以及代码结构很烂。后续优化更新

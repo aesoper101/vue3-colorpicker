@@ -267,7 +267,7 @@ export default defineComponent({
       cursor: pointer;
 
       &.vertical {
-        transform: translate(0px, -7px);
+        transform: translate(-1px, -7px);
         margin-top: 0;
       }
     }

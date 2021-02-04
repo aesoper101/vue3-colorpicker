@@ -34,7 +34,7 @@
         v-if="!disableAlpha"
       />
 
-      <div class="bee-fk-colorPicker__display">
+      <div class="bee-fk-colorPicker__display" v-if="displayCurrentColor">
         <div class="current-color transparent">
           <div
             class="color-cube"
@@ -48,13 +48,14 @@
           :value="currentColor.hex.replace('#', '')"
           @blur="onInputChange"
         />
-        <div class="action">
-          <div class="copy-btn">复制</div>
+        <div class="action" v-if="!disableClipboard">
+          <div class="copy-btn" ref="copyBtn">复制</div>
         </div>
       </div>
 
       <history
         :color-list="storageColorList"
+        :round="historyRound"
         @change="onCompactChange"
         v-if="!disableHistory && storageColorList.length > 0"
       />
@@ -70,23 +71,21 @@ import Saturation from "../common/Saturation.vue";
 import Alpha from "../common/Alpha.vue";
 import Light from "../common/Light.vue";
 import History from "../common/History.vue";
-import { Color, ColorInput, parseColor } from "../color";
+import {
+  ColorAttrs,
+  ColorInput,
+  Color,
+  ColorFormat,
+  debounceFn,
+  STORAGE_COLOR_KEY
+} from "../color";
 import { useStorage } from "vue3-storage";
-import debounce from "lodash.debounce";
+import { useClipboard } from "vue3-normal-directive";
 
-const debounceFn = debounce(
-  (fn: Function) => {
-    fn();
-  },
-  200,
-  {
-    leading: true,
-    trailing: false
-  }
-);
+const MAX_STORAGE_LENGTH = 8;
 
 export default defineComponent({
-  name: "TestPicker",
+  name: "FkColorPicker",
   components: { Compact, Light, Alpha, Saturation, Hue, History },
   props: {
     color: {
@@ -94,24 +93,31 @@ export default defineComponent({
       default: "#000000"
     },
     format: {
-      type: String,
-      default: "hex8"
+      type: String as PropType<ColorFormat>
     },
     disableAlpha: Boolean,
     disableLight: Boolean,
     disableHue: Boolean,
-    disableHistory: Boolean
+    disableHistory: Boolean,
+    disableClipboard: Boolean,
+    displayCurrentColor: {
+      type: Boolean,
+      default: true
+    },
+    historyRound: Boolean
   },
   emits: ["update:color", "change"],
   setup(props, { emit }) {
-    const currentColor = ref<Color>(parseColor(props.color));
+    const colorClass = new Color();
+
+    const currentColor = ref<ColorAttrs>(colorClass.parseColor(props.color));
     const _oldHue = ref(currentColor.value.oldHue);
     const advancePanelShow = ref(false);
 
     const storage = useStorage();
     const storageColorList = ref<string[]>([]);
 
-    const colorInput = ref<HTMLInputElement | null>(null);
+    const copyBtn = ref<HTMLButtonElement | null>(null);
 
     const onBack = () => {
       advancePanelShow.value = false;
@@ -121,29 +127,34 @@ export default defineComponent({
       storageColorList.value = storageColorList.value.filter(value => {
         return value !== currentColor.value.hex8;
       });
-      if (storageColorList.value.length >= 6) {
+      if (storageColorList.value.length >= MAX_STORAGE_LENGTH) {
         storageColorList.value.shift();
       }
       storageColorList.value.push(currentColor.value.hex8);
       storage?.setStorage({
-        key: "colorList",
+        key: STORAGE_COLOR_KEY,
         data: storageColorList.value
       });
     };
 
     const onInitColorList = () => {
       storageColorList.value =
-        storage?.getStorageSync<string[]>("colorList") || [];
+        storage?.getStorageSync<string[]>(STORAGE_COLOR_KEY) || [];
     };
 
     const doOnChange = (data: any, oldHue?: number): void => {
-      currentColor.value = parseColor(data, oldHue);
+      currentColor.value = colorClass.parseColor(data, oldHue);
       debounceFn(onStorageColor);
     };
 
     const doUpdate = () => {
-      emit("update:color", currentColor.value.hex8);
-      emit("change", currentColor.value);
+      if (props.format) {
+        emit("update:color", colorClass.format(props.format));
+        emit("change", colorClass.format(props.format));
+      } else {
+        emit("update:color", currentColor.value);
+        emit("change", currentColor.value);
+      }
     };
 
     const onCompactChange = (color: string) => {
@@ -221,19 +232,27 @@ export default defineComponent({
       doUpdate();
     };
 
+    const onCopyColor = () => {
+      if (copyBtn.value && !props.disableClipboard) {
+        useClipboard(copyBtn.value, { text: () => currentColor.value.hex });
+      }
+    };
+
     watch(
       () => props.color,
       (newVal: ColorInput) => {
         doOnChange(toRaw(newVal));
+        onInitColorList();
       }
     );
 
     onMounted(() => {
       onInitColorList();
+      onCopyColor();
     });
 
     return {
-      colorInput,
+      copyBtn,
       currentColor,
       storageColorList,
       onBack,

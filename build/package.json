@@ -1,26 +1,29 @@
 {
-  "name": "@aesoper/normal-utils",
-  "version": "0.1.0",
-  "description": "normal-utils utils",
-  "main": "NormalUtils.es.js",
+  "name": "vue3-colorpicker",
+  "version": "1.0.0",
+  "description": "A very beautiful color picker",
+  "main": "colorpicker.es.js",
   "types": "index.d.ts",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/aesoper101/normal-utils.git"
+    "url": "git+https://github.com/aesoper101/vue3-colorpicker.git"
   },
   "keywords": [
-    "normal-utils",
-    "utils",
-    "dom",
-    "event"
+    "vue3-colorpicker",
+    "vue",
+    "colorpicker",
+    "chrome",
+    "chrome-color-picker",
+    "ele"
   ],
   "author": "aesoper",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/aesoper101/normal-utils/issues"
+    "url": "https://github.com/aesoper101/vue3-colorpicker/issues"
   },
-  "homepage": "https://github.com/aesoper101/normal-utils#readme"
+  "homepage": "https://github.com/aesoper101/vue3-colorpicker#readme",
+  "dependencies": {}
 }

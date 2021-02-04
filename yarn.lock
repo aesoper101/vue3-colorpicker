@@ -9657,10 +9657,27 @@ vue-template-es2015-compiler@^1.9.0:
   resolved "https://registry.npm.taobao.org/vue-template-es2015-compiler/download/vue-template-es2015-compiler-1.9.1.tgz#1ee3bc9a16ecbf5118be334bb15f9c46f82f5825"
   integrity sha1-HuO8mhbsv1EYvjNLsV+cRvgvWCU=
 
+vue3-colorpicker@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.npmjs.org/vue3-colorpicker/-/vue3-colorpicker-1.0.0.tgz#e887adb83555d0c19152e357e54634c9d10752cf"
+  integrity sha512-IDV8T+tBm0aVTCCiNCNM60kE8KnTRxPewge9n8dIBFbKtJ7rFoy2evQHo+GXfz35vnnHnn+nu8GCNYBGoXlsaQ==
+  dependencies:
+    "@aesoper/normal-utils" "^0.1.2"
+    "@popperjs/core" "^2.6.0"
+    body-scroll-lock "^3.1.5"
+    core-js "^3.6.5"
+    lodash.debounce "^4.0.8"
+    tinycolor2 "^1.4.2"
+    vue "^3.0.0"
+    vue-class-component "^8.0.0-0"
+    vue-router "^4.0.0-0"
+    vue3-normal-directive "^0.1.1"
+    vue3-storage "^0.1.9"
+
 vue3-normal-directive@^0.1.1:
-  version "0.1.1"
-  resolved "https://registry.npm.taobao.org/vue3-normal-directive/download/vue3-normal-directive-0.1.1.tgz?cache=0&sync_timestamp=1612335047671&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2Fvue3-normal-directive%2Fdownload%2Fvue3-normal-directive-0.1.1.tgz#b013050d01e2533a60c76e8fb1476d051eeb6296"
-  integrity sha1-sBMFDQHiUzpgx26PsUdtBR7rYpY=
+  version "0.1.2"
+  resolved "https://registry.npm.taobao.org/vue3-normal-directive/download/vue3-normal-directive-0.1.2.tgz#1bb7fa0be1fe6d657964d9dba5c8a44477936e11"
+  integrity sha1-G7f6C+H+bWV5ZNnbpcikRHeTbhE=
   dependencies:
     body-scroll-lock "^3.1.5"
     clipboard "^2.0.6"
