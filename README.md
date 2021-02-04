@@ -3,7 +3,7 @@
 同时参照了 [element-plus](https://element-plus.org/#/zh-CN/component/color-picker) 以及 [vue-color](https://github.com/xiaokaike/vue-color) 的思路；
 作为一名纯粹的后端人员,我从来没有想过我竟然来写拾色器这个vue插件。
 
-![](.\public\1.png)
+![](public\1.png)
 
 [在线demo演示](https://aesoper101.github.io/vue3-colorpicker/)
 
