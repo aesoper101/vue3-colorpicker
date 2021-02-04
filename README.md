@@ -3,7 +3,7 @@
 同时参照了 [element-plus](https://element-plus.org/#/zh-CN/component/color-picker) 以及 [vue-color](https://github.com/xiaokaike/vue-color) 的思路；
 作为一名纯粹的后端人员,我从来没有想过我竟然来写拾色器这个vue插件。
 
-![](public\1.png)
+![](https://aesoper101.github.io/vue3-colorpicker/1.png)
 
 [在线demo演示](https://aesoper101.github.io/vue3-colorpicker/)
 
@@ -37,23 +37,23 @@ createApp(App)
 <fk-color-picker v-model:color="color" />
 ```
 
-![](.\public\2.png)
+![](https://aesoper101.github.io/vue3-colorpicker/2.PNG)
 
 ```vue
  <chrome-color-picker v-model:color="color" :history-round="true" />
 ```
-![](.\public\3.png)
+![](https://aesoper101.github.io/vue3-colorpicker/3.PNG)
 
 ```vue
 <ele-color-picker v-model:color="color" />
 ```
-![](.\public\4.png)
+![](https://aesoper101.github.io/vue3-colorpicker/4.PNG)
 
 ```
  <！-- 有弹出功能的拾色器 -->
  <popu-color-picker v-model:color="color" />
 ```
-![](.\public\5.png)
+![](https://aesoper101.github.io/vue3-colorpicker/5.PNG)
 
 
 ## 数据输入输出
@@ -125,7 +125,7 @@ export type PickerMode = "fk" | "chrome" | "ele";
 <popu-color-picker v-model:color="color" mode="chrome"  :chrome-color-picker="{format: 'hex'}"/>
 ```
 说明: 以上组件弹出的拾色器为`chrome-color-picker`, 输出的color格式为 `hex`字符串类型,
-![](.\public\6.png)
+![](https://aesoper101.github.io/vue3-colorpicker/6.PNG)
 
 
 ## 由于写得匆忙，文档以及代码结构很烂。后续优化更新
