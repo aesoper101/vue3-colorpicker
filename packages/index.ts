@@ -1,7 +1,5 @@
 import { App } from "vue";
 import { ClickOutsidePlugin, ClipboardPlugin } from "vue3-normal-directive";
-// import FK from "./fk/index.vue";
-// import Chrome from "./chrome/index.vue";
 import PopuColorPicker from "./PopuColorPicker.vue";
 import Vue3Storage from "vue3-storage";
 import FkColorPicker from "./fk/index.vue";
@@ -24,5 +22,7 @@ const install = (app: App) => {
     app.component(comp.name, comp);
   });
 };
+
+export { PopuColorPicker, FkColorPicker, ChromeColorPicker, EleColorPicker };
 
 export default { install };

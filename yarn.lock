@@ -7,6 +7,11 @@
   resolved "https://registry.npm.taobao.org/@aesoper/normal-utils/download/@aesoper/normal-utils-0.1.3.tgz#4316c23dda5e239e3d139700969eaad2db3380e5"
   integrity sha1-QxbCPdpeI549E5cAlp6q0tszgOU=
 
+"@aesoper/normal-utils@^0.1.4":
+  version "0.1.4"
+  resolved "https://registry.npm.taobao.org/@aesoper/normal-utils/download/@aesoper/normal-utils-0.1.4.tgz#05c5c5ca9fb6211e2a226f179f5152ce48fa4e33"
+  integrity sha1-BcXFyp+2IR4qIm8Xn1FSzkj6TjM=
+
 "@babel/code-frame@^7.0.0", "@babel/code-frame@^7.10.4", "@babel/code-frame@^7.12.11", "@babel/code-frame@^7.8.3":
   version "7.12.11"
   resolved "https://registry.npm.taobao.org/@babel/code-frame/download/@babel/code-frame-7.12.11.tgz?cache=0&sync_timestamp=1608076996164&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2F%40babel%2Fcode-frame%2Fdownload%2F%40babel%2Fcode-frame-7.12.11.tgz#f4ad435aa263db935b8f10f2c552d23fb716a63f"
@@ -9719,8 +9724,10 @@ watchpack@^1.7.4:
   resolved "https://registry.npm.taobao.org/watchpack/download/watchpack-1.7.5.tgz?cache=0&sync_timestamp=1607687456328&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2Fwatchpack%2Fdownload%2Fwatchpack-1.7.5.tgz#1267e6c55e0b9b5be44c2023aed5437a2c26c453"
   integrity sha1-EmfmxV4Lm1vkTCAjrtVDeiwmxFM=
   dependencies:
+    chokidar "^3.4.1"
     graceful-fs "^4.1.2"
     neo-async "^2.5.0"
+    watchpack-chokidar2 "^2.0.1"
   optionalDependencies:
     chokidar "^3.4.1"
     watchpack-chokidar2 "^2.0.1"

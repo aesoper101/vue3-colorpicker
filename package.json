@@ -1,6 +1,6 @@
 {
   "name": "vue3-colorpicker",
-  "version": "1.0.0",
+  "version": "1.0.2",
   "description": "A very beautiful color picker",
   "private": false,
   "main": "dist/colorpicker.es.js",
@@ -26,7 +26,7 @@
     "pre": "cd dist && yarn link && cd .. && yarn link vue3-colorpicker"
   },
   "dependencies": {
-    "@aesoper/normal-utils": "^0.1.2",
+    "@aesoper/normal-utils": "^0.1.4",
     "@popperjs/core": "^2.6.0",
     "body-scroll-lock": "^3.1.5",
     "core-js": "^3.6.5",
