@@ -1,0 +1,26 @@
+{
+  "compilerOptions": {
+    "target": "esnext",
+    "useDefineForClassFields": true,
+    "module": "esnext",
+    "moduleResolution": "node",
+    "strict": true,
+    "jsx": "preserve",
+    "sourceMap": true,
+    "resolveJsonModule": true,
+    "declaration": true,
+    "declarationDir": "dist/types",
+    "removeComments": true,
+    "baseUrl": ".",
+    "outDir": "dist",
+    "noEmitOnError": true,
+    "esModuleInterop": true,
+    "noImplicitAny": false,
+    "importHelpers": true,
+    "lib": ["esnext", "dom"],
+    "typeRoots": ["types"],
+    "types": ["vite/client"]
+  },
+  "include": ["packages/**/*.ts", "packages/**/*.d.ts", "packages/**/*.tsx", "packages/**/*.vue"],
+  "exclude": ["node_modules", "public", "favicon.ico", "main.ts"]
+}

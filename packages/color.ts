@@ -1,6 +1,6 @@
 import tinycolor, { Instance } from "tinycolor2";
 import { isDef, isNull } from "@aesoper/normal-utils";
-import debounce from "lodash.debounce";
+import { debounce } from "lodash-es";
 
 export interface Alpha {
   a: number;
@@ -62,16 +62,7 @@ export interface ColorAttrs {
   oldHue: number;
 }
 
-type ColorInputWithoutInstance =
-  | string
-  | PRGB
-  | PRGBA
-  | RGB
-  | RGBA
-  | HSL
-  | HSLA
-  | HSV
-  | HSVA;
+type ColorInputWithoutInstance = string | PRGB | PRGBA | RGB | RGBA | HSL | HSLA | HSV | HSVA;
 
 export type ColorInput = ColorInstance | ColorInputWithoutInstance;
 
@@ -132,7 +123,7 @@ export class Color {
         h: Math.round(hsl.h),
         s: Number(Math.round(hsl.s * 100).toFixed(2)) / 100,
         l: Number(Math.round(hsl.l * 100).toFixed(2)) / 100,
-        a: Math.round(hsl.a * 100) / 100
+        a: Math.round(hsl.a * 100) / 100,
       },
       hex: this.instance.toHexString().toUpperCase(),
       hex8: this.instance.toHex8String().toUpperCase(),
@@ -140,17 +131,17 @@ export class Color {
         r: Math.round(rgb.r),
         g: Math.round(rgb.g),
         b: Math.round(rgb.b),
-        a: Math.round(rgb.a * 100) / 100
+        a: Math.round(rgb.a * 100) / 100,
       },
       hsv: {
         h: Math.round(hsv.h),
         s: Math.round(hsv.s * 100) / 100,
         v: Math.round(hsv.v * 100) / 100,
-        a: Math.round(hsl.a * 100) / 100
+        a: Math.round(hsl.a * 100) / 100,
       },
       oldHue: Math.round(data.h || oldHue || hsl.h),
       source: data.source,
-      alpha: Math.round((data.a || this.instance.getAlpha()) * 100) / 100
+      alpha: Math.round((data.a || this.instance.getAlpha()) * 100) / 100,
     };
   }
 
@@ -166,7 +157,7 @@ export const debounceFn = debounce(
   200,
   {
     leading: true,
-    trailing: false
+    trailing: false,
   }
 );
 

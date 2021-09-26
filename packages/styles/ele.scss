@@ -1,0 +1,27 @@
+.bee-ele-colorPicker {
+  position: relative;
+  box-sizing: border-box;
+  border-radius: 3px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.15);
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  background-color: white;
+  padding: 10px;
+  width: 300px;
+
+  .bee-ele-row {
+    display: flex;
+
+    .bee-ele-saturation {
+      width: 280px;
+      height: 180px;
+    }
+
+    .bee-ele-hue {
+      margin-left: 10px;
+      height: 180px;
+    }
+  }
+}
