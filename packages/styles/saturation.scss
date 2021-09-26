@@ -1,0 +1,47 @@
+.bee-saturation {
+  position: relative;
+  margin-bottom: 15px;
+  width: 100%;
+  height: 125px;
+
+  &__chrome {
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+    border-color: transparent;
+  }
+
+  &__hidden {
+    overflow: hidden;
+  }
+
+  &__white,
+  &__black {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+  }
+
+  &__black {
+    background: linear-gradient(0deg, #000, transparent);
+  }
+
+  &__white {
+    background: linear-gradient(90deg, #fff, hsla(0, 0%, 100%, 0));
+  }
+
+  &__cursor {
+    position: absolute;
+
+    div {
+      transform: translate(-5px, -5px);
+      box-shadow: 0 1px 4px 0 rgba(0, 0, 0, 0.37);
+      width: 10px;
+      height: 10px;
+      border: 1px solid white;
+      border-radius: 50%;
+      cursor: pointer;
+    }
+  }
+}
