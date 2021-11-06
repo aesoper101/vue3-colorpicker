@@ -33,13 +33,13 @@
     "lodash-es": "^4.17.21",
     "tinycolor2": "^1.4.2",
     "vue": "^3.2.6",
+    "vue-types": "^4.1.0",
     "vue3-normal-directive": "^0.1.4",
-    "vue3-normal-library": "^0.1.6",
-    "vue3-storage": "^0.1.11"
+    "vue3-normal-library": "^0.1.6"
   },
   "devDependencies": {
-    "@commitlint/cli": "^12.1.4",
-    "@commitlint/config-conventional": "^12.1.4",
+    "@commitlint/cli": "^14.1.0",
+    "@commitlint/config-conventional": "^14.1.0",
     "@types/jest": "^27.0.1",
     "@types/lodash-es": "^4.17.4",
     "@types/node": "^16.7.13",
