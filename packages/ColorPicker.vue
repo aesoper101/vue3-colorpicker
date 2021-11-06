@@ -1,6 +1,6 @@
 <template>
-  <div class="vc-color-wrap transparent" v-if="!isWidget">
-    <div class="current-color"></div>
+  <div class="vc-color-wrap transparent" v-if="!isWidget" ref="colorCubeRef">
+    <div class="current-color" :style="getBgColorStyle" @click="onShowPicker"></div>
   </div>
   <FkColorPicker
     v-if="isWidget && pickerType === 'fk'"
@@ -13,27 +13,30 @@
     @change="onColorChange"
   />
   <teleport to="body" v-if="!isWidget">
-    <FkColorPicker
-      v-if="pickerType === 'fk'"
-      v-model:color="colorInstance"
-      @change="onColorChange"
-    />
-    <ChromeColorPicker
-      v-if="pickerType === 'chrome'"
-      v-model:color="colorInstance"
-      @change="onColorChange"
-    />
+    <div ref="pickerRef" v-show="showPicker">
+      <FkColorPicker
+        v-if="pickerType === 'fk' && showPicker"
+        v-model:color="colorInstance"
+        @change="onColorChange"
+      />
+      <ChromeColorPicker
+        v-if="pickerType === 'chrome' && showPicker"
+        v-model:color="colorInstance"
+        @change="onColorChange"
+      />
+    </div>
   </teleport>
 </template>
 
 <script lang="ts">
-  import { defineComponent, PropType, reactive, ref } from "vue";
+  import { computed, defineComponent, PropType, reactive, ref } from "vue";
   import FkColorPicker from "./fk/FkColorPicker.vue";
   import ChromeColorPicker from "./chrome/ChromeColorPicker.vue";
   import tinycolor, { ColorInputWithoutInstance } from "tinycolor2";
   import propTypes from "vue-types";
   import { Color, ColorFormat } from "./utils/color";
-  import { whenever } from "@vueuse/core";
+  import { onClickOutside, tryOnMounted, whenever } from "@vueuse/core";
+  import { createPopper } from "@popperjs/core";
 
   const pickerProps = propTypes.shape({
     disableHistory: propTypes.bool.def(false),
@@ -67,6 +70,47 @@
       const instance = new Color(state.color);
       const colorInstance = ref(instance);
 
+      // Ref
+      const showPicker = ref(false);
+      const colorCubeRef = ref<HTMLElement | null>(null);
+      const pickerRef = ref<HTMLElement | null>(null);
+
+      const getBgColorStyle = computed(() => {
+        return {
+          background: tinycolor(state.color).toRgbString(),
+        };
+      });
+
+      const onShowPicker = () => {
+        showPicker.value = true;
+      };
+
+      const onHidePicker = () => {
+        showPicker.value = false;
+      };
+
+      const onInit = () => {
+        if (colorCubeRef.value && pickerRef.value) {
+          createPopper(colorCubeRef.value, pickerRef.value, {
+            placement: "auto",
+            modifiers: [
+              // {
+              //   name: "offset",
+              //   options: {
+              //     offset: [10, 10]
+              //   }
+              // },
+              {
+                name: "flip",
+                options: {
+                  fallbackPlacements: ["top", "left"],
+                },
+              },
+            ],
+          });
+        }
+      };
+
       const onColorChange = (v: Color) => {
         colorInstance.value = v;
         state.color = v.toString(props.format);
@@ -74,6 +118,14 @@
         emit("update:color", state.color);
         emit("change", state.color);
       };
+
+      onClickOutside(pickerRef, () => {
+        onHidePicker();
+      });
+
+      tryOnMounted(() => {
+        onInit();
+      });
 
       whenever(
         () => props.color,
@@ -88,7 +140,15 @@
         { deep: true }
       );
 
-      return { colorInstance, onColorChange };
+      return {
+        colorCubeRef,
+        pickerRef,
+        showPicker,
+        colorInstance,
+        getBgColorStyle,
+        onColorChange,
+        onShowPicker,
+      };
     },
   });
 </script>
