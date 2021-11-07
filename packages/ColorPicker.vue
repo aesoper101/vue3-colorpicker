@@ -1,15 +1,23 @@
 <template>
-  <div class="vc-color-wrap transparent" v-if="!isWidget" ref="colorCubeRef">
+  <div
+    :class="['vc-color-wrap', 'transparent', { round: round }]"
+    v-if="!isWidget"
+    ref="colorCubeRef"
+  >
     <div class="current-color" :style="getBgColorStyle" @click="onShowPicker"></div>
   </div>
   <FkColorPicker
     v-if="isWidget && pickerType === 'fk'"
     v-model:color="colorInstance"
+    :disable-history="disableHistory"
+    :round-history="roundHistory"
     @change="onColorChange"
   />
   <ChromeColorPicker
     v-if="isWidget && pickerType === 'chrome'"
     v-model:color="colorInstance"
+    :disable-history="disableHistory"
+    :round-history="roundHistory"
     @change="onColorChange"
   />
   <teleport to="body" v-if="!isWidget">
@@ -17,11 +25,15 @@
       <FkColorPicker
         v-if="pickerType === 'fk' && showPicker"
         v-model:color="colorInstance"
+        :disable-history="disableHistory"
+        :round-history="roundHistory"
         @change="onColorChange"
       />
       <ChromeColorPicker
         v-if="pickerType === 'chrome' && showPicker"
         v-model:color="colorInstance"
+        :disable-history="disableHistory"
+        :round-history="roundHistory"
         @change="onColorChange"
       />
     </div>
@@ -37,11 +49,6 @@
   import { Color, ColorFormat } from "./utils/color";
   import { onClickOutside, tryOnMounted, whenever } from "@vueuse/core";
   import { createPopper } from "@popperjs/core";
-
-  const pickerProps = propTypes.shape({
-    disableHistory: propTypes.bool.def(false),
-    round: propTypes.bool.def(false),
-  }).loose;
 
   export default defineComponent({
     name: "ColorPicker",
@@ -59,7 +66,8 @@
         type: String as PropType<ColorFormat>,
         default: "hex",
       },
-      options: pickerProps,
+      disableHistory: propTypes.bool.def(false),
+      roundHistory: propTypes.bool.def(false),
     },
     emits: ["update:color", "change"],
     setup(props, { emit }) {

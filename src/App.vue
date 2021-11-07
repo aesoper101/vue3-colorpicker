@@ -2,12 +2,12 @@
   // This starter template is using Vue 3 <script setup> SFCs
   // Check out https://v3.vuejs.org/api/sfc-script-setup.html#sfc-script-setup
   import { ref } from "vue";
-  import tinycolor, { ColorInput } from "tinycolor2";
+  import { ColorInput } from "tinycolor2";
   import { ColorPicker } from "../packages";
 
   const color = ref<ColorInput>("red");
 
-  console.log(tinycolor("431893").toRgbString(), tinycolor("431893").toRgbString());
+  const color1 = ref<ColorInput>("green");
 
   setTimeout(() => (color.value = "431893"), 100);
 </script>
@@ -17,10 +17,10 @@
   {{ color }}
   <div>
     <div style="display: inline-block">
-      <ColorPicker v-model:color="color" format="rgb" id="a1" />
+      <ColorPicker v-model:color="color" format="rgb" id="a1" round />
     </div>
     <div style="display: inline-block; margin-left: 30px">
-      <ColorPicker v-model:color="color" format="rgb" id="a2" />
+      <ColorPicker v-model:color="color1" picker-type="chrome" format="rgb" id="a2" />
     </div>
   </div>
 </template>

@@ -34,7 +34,6 @@
     "tinycolor2": "^1.4.2",
     "vue": "^3.2.6",
     "vue-types": "^4.1.0",
-    "vue3-normal-directive": "^0.1.4",
     "vue3-normal-library": "^0.1.6"
   },
   "devDependencies": {

@@ -19,7 +19,7 @@
         <input class="hexColor-input" :value="state.hex.replace('#', '')" @blur="onInputChange" />
       </div>
       <History
-        :round="round"
+        :round="roundHistory"
         :colors="historyColors"
         v-if="!disableHistory"
         @change="onCompactChange"
@@ -47,7 +47,7 @@
     props: {
       color: propTypes.instanceOf(Color),
       disableHistory: propTypes.bool.def(false),
-      round: propTypes.bool.def(false),
+      roundHistory: propTypes.bool.def(false),
     },
     emits: ["update:color", "change"],
     setup(props, { emit }) {
@@ -77,7 +77,7 @@
         const rgbString = state.color.toRgbString();
 
         historyColors.value = historyColors.value.filter((value) => {
-          return value !== rgbString;
+          return !tinycolor.equals(value, rgbString);
         });
 
         if (historyColors.value.includes(rgbString)) {

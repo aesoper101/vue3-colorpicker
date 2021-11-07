@@ -12,7 +12,7 @@
         </div>
       </div>
       <History
-        :round="round"
+        :round="roundHistory"
         :colors="historyColors"
         v-if="!disableHistory"
         @change="onCompactChange"
@@ -30,6 +30,7 @@
   import propTypes from "vue-types";
   import { Color, HistoryColorKey, MAX_STORAGE_LENGTH } from "../utils/color";
   import { useDebounceFn, useLocalStorage, whenever } from "@vueuse/core";
+  import tinycolor from "tinycolor2";
 
   export default defineComponent({
     name: "ChromeColorPicker",
@@ -37,7 +38,7 @@
     props: {
       color: propTypes.instanceOf(Color),
       disableHistory: propTypes.bool.def(false),
-      round: propTypes.bool.def(false),
+      roundHistory: propTypes.bool.def(false),
     },
     emits: ["update:color", "change"],
     setup(props, { emit }) {
@@ -61,7 +62,7 @@
         const rgbString = state.color.toRgbString();
 
         historyColors.value = historyColors.value.filter((value) => {
-          return value !== rgbString;
+          return !tinycolor.equals(value, rgbString);
         });
 
         if (historyColors.value.includes(rgbString)) {
