@@ -61,16 +61,13 @@
         { deep: true }
       );
 
-      const getBackgroundStyle = computed(
-        () => {
-          const startColor = rgbaColor(state.red, state.green, state.blue, 0);
-          const endColor = rgbaColor(state.red, state.green, state.blue, 100);
-          return {
-            background: `linear-gradient(to right, ${startColor} , ${endColor})`,
-          };
-        },
-        { onTrack: () => console.log(11) }
-      );
+      const getBackgroundStyle = computed(() => {
+        const startColor = rgbaColor(state.red, state.green, state.blue, 0);
+        const endColor = rgbaColor(state.red, state.green, state.blue, 100);
+        return {
+          background: `linear-gradient(to right, ${startColor} , ${endColor})`,
+        };
+      });
 
       const getCursorLeft = () => {
         if (barElement.value && cursorElement.value) {
