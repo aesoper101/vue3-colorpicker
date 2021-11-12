@@ -8,9 +8,10 @@
         </div>
         <div class="chrome-sliders">
           <Hue size="small" :color="state.color" @change="onHueChange" />
-          <Alpha size="small" :color="state.color" @change="onAlphaChange" />
+          <Alpha size="small" :color="state.color" @change="onAlphaChange" v-if="!disableAlpha" />
         </div>
       </div>
+      <Display :color="state.color" :disable-alpha="disableAlpha" />
       <History
         :round="roundHistory"
         :colors="historyColors"
@@ -31,14 +32,16 @@
   import { Color, HistoryColorKey, MAX_STORAGE_LENGTH } from "../utils/color";
   import { useDebounceFn, useLocalStorage, whenever } from "@vueuse/core";
   import tinycolor from "tinycolor2";
+  import Display from "../common/Display.vue";
 
   export default defineComponent({
     name: "ChromeColorPicker",
-    components: { Alpha, Board, Hue, History },
+    components: { Display, Alpha, Board, Hue, History },
     props: {
       color: propTypes.instanceOf(Color),
       disableHistory: propTypes.bool.def(false),
       roundHistory: propTypes.bool.def(false),
+      disableAlpha: propTypes.bool.def(false),
     },
     emits: ["update:color", "change"],
     setup(props, { emit }) {
@@ -135,14 +138,12 @@
     position: relative;
     box-sizing: border-box;
     border-radius: 3px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.15);
     user-select: none;
     background-color: white;
-    width: 250px;
-    padding-bottom: 20px;
 
     &-body {
-      padding: 0 12px;
+      position: relative;
+      //padding: 0 12px;
       background-color: #fff;
 
       .chrome-controls {

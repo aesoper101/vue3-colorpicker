@@ -134,6 +134,7 @@
       position: relative;
       width: 100%;
       margin: 0;
+      height: 27px;
 
       & > * {
         display: inline-block;
@@ -181,8 +182,8 @@
 
     &__color-cube--wrap {
       position: relative;
-      width: 25px;
-      height: 25px;
+      width: 27px;
+      height: 27px;
       cursor: pointer;
       overflow: hidden;
 

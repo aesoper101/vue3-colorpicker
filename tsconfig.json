@@ -11,7 +11,9 @@
     "esModuleInterop": true,
     "lib": ["esnext", "dom"],
     "typeRoots": ["types"],
-    "types": ["vite/client"]
+    "types": ["vite/client", "webpack-env"],
+    "skipLibCheck": true,
+    "allowSyntheticDefaultImports": true
   },
   "include": [
     "src/**/*.ts",
@@ -22,5 +24,6 @@
     "packages/**/*.ts",
     "packages/**/*.vue",
     "packages/**/*.d.ts"
-  ]
+  ],
+  "exclude": ["./node_modules"]
 }

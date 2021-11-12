@@ -10,14 +10,8 @@
       <Board :color="state.color" v-if="advancePanelShow" @change="onBoardChange" />
       <Hue v-if="advancePanelShow" :color="state.color" @change="onHueChange" />
       <Lightness v-if="!advancePanelShow" :color="state.color" @change="onLightChange" />
-      <Alpha :color="state.color" @change="onAlphaChange" />
-      <div class="vc-fk-colorPicker__display">
-        <div class="current-color transparent">
-          <div class="color-cube" :style="previewStyle"></div>
-        </div>
-        <span class="hexColor-prefix">#</span>
-        <input class="hexColor-input" :value="state.hex.replace('#', '')" @blur="onInputChange" />
-      </div>
+      <Alpha :color="state.color" @change="onAlphaChange" v-if="!disableAlpha" />
+      <Display :color="state.color" :disable-alpha="disableAlpha" />
       <History
         :round="roundHistory"
         :colors="historyColors"
@@ -40,16 +34,18 @@
   import { Color, HistoryColorKey, MAX_STORAGE_LENGTH } from "../utils/color";
   import { useDebounceFn, useLocalStorage, whenever } from "@vueuse/core";
   import tinycolor from "tinycolor2";
+  import Display from "../common/Display.vue";
 
   export default defineComponent({
     name: "FkColorPicker",
-    components: { Alpha, Palette, Board, Hue, Lightness, History },
+    components: { Display, Alpha, Palette, Board, Hue, Lightness, History },
     props: {
       color: propTypes.instanceOf(Color),
       disableHistory: propTypes.bool.def(false),
       roundHistory: propTypes.bool.def(false),
+      disableAlpha: propTypes.bool.def(false),
     },
-    emits: ["update:color", "change"],
+    emits: ["update:color", "change", "advanceChange"],
     setup(props, { emit }) {
       const colorInstance = props.color || new Color();
       const state = reactive({
@@ -66,6 +62,7 @@
 
       const onBack = () => {
         advancePanelShow.value = false;
+        emit("advanceChange", false);
       };
 
       const historyColors = useLocalStorage<string[]>(HistoryColorKey, [], {});
@@ -94,8 +91,10 @@
       const onCompactChange = (color: string) => {
         if (color === "advance") {
           advancePanelShow.value = true;
+          emit("advanceChange", true);
         } else {
           state.color.hex = color;
+          emit("advanceChange", false);
         }
       };
 
@@ -168,14 +167,11 @@
     position: relative;
     box-sizing: border-box;
     border-radius: 3px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.15);
     user-select: none;
     background-color: white;
-    width: 249px;
-    padding-bottom: 10px;
 
     &__inner {
-      padding: 12px;
+      position: relative;
     }
 
     &__header {
