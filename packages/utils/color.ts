@@ -235,15 +235,15 @@ export class Color {
   }
 
   get RGB() {
-    return [this.red, this.green, this.blue];
+    return [this.red, this.green, this.blue, this.alpha / 100];
   }
 
   get HSB() {
-    return [this.hue, this.saturation, this.brightness];
+    return [this.hue, this.saturation, this.brightness, this.alpha / 100];
   }
 
   get HSL() {
-    return [this.hue, this.hslSaturationValue, this.lightness];
+    return [this.hue, this.hslSaturationValue, this.lightness, this.alpha / 100];
   }
 }
 

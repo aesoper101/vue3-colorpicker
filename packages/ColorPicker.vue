@@ -1,82 +1,102 @@
 <template>
   <div
-    :class="['vc-color-wrap', 'transparent', { round: round }]"
+    :class="['vc-color-wrap', 'transparent', { round: shape === 'circle' }]"
     v-if="!isWidget"
     ref="colorCubeRef"
   >
     <div class="current-color" :style="getBgColorStyle" @click="onShowPicker"></div>
   </div>
-  <FkColorPicker
-    v-if="isWidget && pickerType === 'fk'"
-    v-model:color="colorInstance"
-    :disable-history="disableHistory"
-    :round-history="roundHistory"
-    @change="onColorChange"
-  />
-  <ChromeColorPicker
-    v-if="isWidget && pickerType === 'chrome'"
-    v-model:color="colorInstance"
-    :disable-history="disableHistory"
-    :round-history="roundHistory"
-    @change="onColorChange"
-  />
+  <WrapContainer
+    v-model:active-key="state.activeKey"
+    v-if="isWidget"
+    :show-tab="useType === 'both'"
+    @change="onActiveKeyChange"
+  >
+    <component :is="getComponentName" :key="getComponentName" v-bind="getBindArgs" />
+  </WrapContainer>
+
   <teleport to="body" v-if="!isWidget">
     <div ref="pickerRef" v-show="showPicker">
-      <FkColorPicker
-        v-if="pickerType === 'fk' && showPicker"
-        v-model:color="colorInstance"
-        :disable-history="disableHistory"
-        :round-history="roundHistory"
-        @change="onColorChange"
-      />
-      <ChromeColorPicker
-        v-if="pickerType === 'chrome' && showPicker"
-        v-model:color="colorInstance"
-        :disable-history="disableHistory"
-        :round-history="roundHistory"
-        @change="onColorChange"
-      />
+      <WrapContainer
+        :show-tab="useType === 'both' && !state.isAdvanceMode"
+        v-if="showPicker"
+        v-model:active-key="state.activeKey"
+        @change="onActiveKeyChange"
+      >
+        <component :is="getComponentName" :key="getComponentName" v-bind="getBindArgs" />
+      </WrapContainer>
     </div>
   </teleport>
 </template>
 
 <script lang="ts">
-  import { computed, defineComponent, PropType, reactive, ref } from "vue";
+  import { computed, defineComponent, ExtractPropTypes, PropType, reactive, ref } from "vue";
   import FkColorPicker from "./fk/FkColorPicker.vue";
   import ChromeColorPicker from "./chrome/ChromeColorPicker.vue";
+  import GradientColorPicker from "./gradient/GradientColorPicker.vue";
+  import WrapContainer from "./common/WrapContainer.vue";
   import tinycolor, { ColorInputWithoutInstance } from "tinycolor2";
   import propTypes from "vue-types";
   import { Color, ColorFormat } from "./utils/color";
   import { onClickOutside, tryOnMounted, whenever } from "@vueuse/core";
   import { createPopper } from "@popperjs/core";
+  import { GradientNode, parse, stringify } from "gradient-parser";
+
+  const colorPickerProps = {
+    isWidget: propTypes.bool.def(false),
+    pickerType: propTypes.oneOf(["fk", "chrome"]).def("fk"),
+    shape: propTypes.oneOf(["circle", "square"]).def("square"),
+    pureColor: {
+      type: [String, Object] as PropType<ColorInputWithoutInstance>,
+      default: "#000000",
+    },
+    gradientColor: propTypes.string.def("#000"),
+    format: {
+      type: String as PropType<ColorFormat>,
+      default: "rgb",
+    },
+    disableAlpha: propTypes.bool.def(false),
+    disableHistory: propTypes.bool.def(false),
+    roundHistory: propTypes.bool.def(false),
+    useType: propTypes.oneOf(["single", "gradient", "both"]).def("single"),
+    activeKey: propTypes.oneOf(["single", "gradient"]).def("single"),
+  };
+
+  export type ColorPickerProps = Partial<ExtractPropTypes<typeof colorPickerProps>>;
 
   export default defineComponent({
     name: "ColorPicker",
-    components: { FkColorPicker, ChromeColorPicker },
+    components: { FkColorPicker, ChromeColorPicker, GradientColorPicker, WrapContainer },
     inheritAttrs: false,
-    props: {
-      isWidget: propTypes.bool.def(false),
-      pickerType: propTypes.oneOf(["fk", "chrome"]).def("fk"),
-      round: propTypes.bool.def(false),
-      color: {
-        type: [String, Object] as PropType<ColorInputWithoutInstance>,
-        default: "#000000",
-      },
-      format: {
-        type: String as PropType<ColorFormat>,
-        default: "hex",
-      },
-      disableHistory: propTypes.bool.def(false),
-      roundHistory: propTypes.bool.def(false),
-    },
-    emits: ["update:color", "change"],
+    props: colorPickerProps,
+    emits: [
+      "update:pureColor",
+      "pureColorChange",
+      "update:gradientColor",
+      "gradientColorChange",
+      "update:activeKey",
+      "activeKeyChange",
+    ],
     setup(props, { emit }) {
       const state = reactive({
-        color: props.color || "",
+        pureColor: props.pureColor || "",
+        activeKey: props.useType === "gradient" ? "gradient" : "single", //  "single" | "gradient"
+        isAdvanceMode: false,
       });
 
-      const instance = new Color(state.color);
+      const instance = new Color(state.pureColor);
       const colorInstance = ref(instance);
+
+      const startColor = new Color("#000");
+      const endColor = new Color("#000");
+      const gradientState = reactive({
+        startColor,
+        endColor,
+        startColorStop: 0,
+        endColorStop: 100,
+        angle: 0,
+        gradientColor: props.gradientColor,
+      });
 
       // Ref
       const showPicker = ref(false);
@@ -84,10 +104,68 @@
       const pickerRef = ref<HTMLElement | null>(null);
 
       const getBgColorStyle = computed(() => {
+        const bgColor =
+          state.activeKey !== "gradient"
+            ? tinycolor(state.pureColor).toRgbString()
+            : gradientState.gradientColor;
         return {
-          background: tinycolor(state.color).toRgbString(),
+          background: bgColor,
         };
       });
+
+      const getComponentName = computed(() => {
+        if (state.activeKey === "gradient") {
+          return GradientColorPicker.name;
+        }
+        return props.pickerType === "fk" ? FkColorPicker.name : ChromeColorPicker.name;
+      });
+
+      const getBindArgs = computed(() => {
+        if (state.activeKey === "gradient") {
+          return {
+            startColor: gradientState.startColor,
+            endColor: gradientState.endColor,
+            onStartColorChange: (v: Color) => {
+              gradientState.startColor = v;
+              onGradientChange();
+            },
+            onEndColorChange: (v: Color) => {
+              gradientState.endColor = v;
+              onGradientChange();
+            },
+            angle: gradientState.angle,
+            startColorStop: gradientState.startColorStop,
+            endColorStop: gradientState.endColorStop,
+            onStartColorStopChange: (v: number) => {
+              gradientState.startColorStop = v;
+              onGradientChange();
+            },
+            onEndColorStopChange: (v: number) => {
+              gradientState.endColorStop = v;
+              onGradientChange();
+            },
+            onAngleChange: (v: number) => {
+              gradientState.angle = v;
+              onGradientChange();
+            },
+            onAdvanceChange: (v: boolean) => {
+              state.isAdvanceMode = v;
+            },
+          };
+        }
+        return {
+          disableAlpha: props.disableAlpha,
+          disableHistory: props.disableHistory,
+          roundHistory: props.roundHistory,
+          color: colorInstance.value,
+          onChange: onColorChange,
+          onAdvanceChange: onAdvanceChange,
+        };
+      });
+
+      const onAdvanceChange = (isAdvance: boolean) => {
+        state.isAdvanceMode = isAdvance;
+      };
 
       const onShowPicker = () => {
         showPicker.value = true;
@@ -97,17 +175,85 @@
         showPicker.value = false;
       };
 
+      const parseGradientColor = () => {
+        try {
+          const [colorNode] = parse(gradientState.gradientColor);
+          if (
+            colorNode &&
+            colorNode.type === "linear-gradient" &&
+            colorNode.orientation?.type === "angular" &&
+            colorNode.colorStops.length >= 2
+          ) {
+            const startColorVal = colorNode.colorStops[0];
+            const endColorVal = colorNode.colorStops[1];
+
+            gradientState.startColorStop = Number(startColorVal.length?.value) || 0;
+            gradientState.endColorStop = Number(endColorVal.length?.value) || 0;
+            gradientState.angle = Number(colorNode.orientation?.value) || 0;
+
+            const [r, g, b, a] = startColorVal.value;
+            const [r1, g1, b1, a1] = startColorVal.value;
+
+            gradientState.startColor = new Color({
+              r: Number(r),
+              g: Number(g),
+              b: Number(b),
+              a: Number(a),
+            });
+            gradientState.startColor = new Color({
+              r: Number(r1),
+              g: Number(g1),
+              b: Number(b1),
+              a: Number(a1),
+            });
+          }
+        } catch (e) {
+          console.log(`[Parse Color]: ${e}`);
+        }
+      };
+
+      const onGradientChange = () => {
+        const nodes = color2GradientNode();
+        try {
+          gradientState.gradientColor = stringify(nodes);
+
+          emit("update:gradientColor", gradientState.gradientColor);
+          emit("gradientColorChange", gradientState.gradientColor);
+        } catch (e) {
+          console.log(e);
+        }
+      };
+
+      const color2GradientNode = () => {
+        const nodes: GradientNode[] = [];
+        const startColorArr = gradientState.startColor.RGB.map((v) => v.toString());
+        const endColorArr = gradientState.endColor.RGB.map((v) => v.toString());
+
+        nodes.push({
+          type: "linear-gradient",
+          orientation: { type: "angular", value: gradientState.angle + "" },
+          colorStops: [
+            {
+              type: "rgba",
+              value: [startColorArr[0], startColorArr[1], startColorArr[2], startColorArr[3]],
+              length: { value: gradientState.startColorStop + "", type: "%" },
+            },
+            {
+              type: "rgba",
+              value: [endColorArr[0], endColorArr[1], endColorArr[2], endColorArr[3]],
+              length: { value: gradientState.endColorStop + "", type: "%" },
+            },
+          ],
+        });
+
+        return nodes;
+      };
+
       const onInit = () => {
         if (colorCubeRef.value && pickerRef.value) {
           createPopper(colorCubeRef.value, pickerRef.value, {
             placement: "auto",
             modifiers: [
-              // {
-              //   name: "offset",
-              //   options: {
-              //     offset: [10, 10]
-              //   }
-              // },
               {
                 name: "flip",
                 options: {
@@ -121,28 +267,78 @@
 
       const onColorChange = (v: Color) => {
         colorInstance.value = v;
-        state.color = v.toString(props.format);
 
-        emit("update:color", state.color);
-        emit("change", state.color);
+        state.pureColor = v.toString(props.format);
+
+        emitColorChange();
+      };
+
+      const emitColorChange = () => {
+        emit("update:pureColor", state.pureColor);
+        emit("pureColorChange", state.pureColor);
       };
 
       onClickOutside(pickerRef, () => {
         onHidePicker();
       });
 
+      const onActiveKeyChange = (key: string) => {
+        state.activeKey = key;
+        emit("update:activeKey", key);
+        emit("activeKeyChange", key);
+      };
+
       tryOnMounted(() => {
         onInit();
+        emitColorChange();
+
+        parseGradientColor();
+        onGradientChange();
       });
 
       whenever(
-        () => props.color,
+        () => props.gradientColor,
         (value) => {
-          const equal = tinycolor.equals(value, state.color);
+          if (value != gradientState.gradientColor) {
+            gradientState.gradientColor = value;
+          }
+        }
+      );
+
+      whenever(
+        () => gradientState.gradientColor,
+        () => {
+          parseGradientColor();
+        }
+      );
+
+      whenever(
+        () => props.activeKey,
+        (value) => {
+          state.activeKey = value;
+        }
+      );
+
+      whenever(
+        () => props.useType,
+        (value) => {
+          if (state.activeKey !== "gradient" && value === "gradient") {
+            state.activeKey = "gradient";
+          } else {
+            state.activeKey = "single";
+          }
+        }
+      );
+
+      whenever(
+        () => props.pureColor,
+        (value) => {
+          const equal = tinycolor.equals(value, state.pureColor);
 
           if (!equal) {
-            state.color = value;
+            state.pureColor = value;
             colorInstance.value = new Color(value);
+            emitColorChange();
           }
         },
         { deep: true }
@@ -156,6 +352,10 @@
         getBgColorStyle,
         onColorChange,
         onShowPicker,
+        onActiveKeyChange,
+        getComponentName,
+        getBindArgs,
+        state,
       };
     },
   });

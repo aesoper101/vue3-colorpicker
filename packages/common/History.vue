@@ -55,8 +55,8 @@
 
       .color-item {
         position: relative;
-        width: 24px;
-        height: 24px;
+        width: 26px;
+        height: 26px;
         cursor: pointer;
         overflow: hidden;
         display: inline-block;
