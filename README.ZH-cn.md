@@ -1,28 +1,28 @@
 # colorpicker
 
-A very beautiful color picker, supports input and output of multiple color formats, and supports gradient color selection.
+非常漂亮的一款拾色器,支持多种颜色格式的输入输出,支持渐变色选择。
 
-Note: This document is for Vue3ColorPicker v2. If you are looking for an older versions, refer to the v1 branches.The v2 version is a destructive update, and some functions in v1 are no longer supported. Please use it with caution
+注意：本文档适用于 v2 以上版本。如果您正在使用旧版本，请参阅 v1 分支。v2 版本为破坏性更新，不再支持 v1 中的某些功能,请谨慎使用。
 
-[Live Demo](https://aesoper101.github.io/vue3-colorpicker/)
+[在线 demo 演示](https://aesoper101.github.io/vue3-colorpicker/)
 
-[中文文档](./README.ZH-cn.md)
+[English](./README.md)
 
-## Installation
+## 安装
 
 ```
 yarn add vue3-colorpicker
 ```
 
-OR
+或者
 
 ```
 npm install vue3-colorpicker
 ```
 
-## How to use
+## 如何使用
 
-### The first step is global registration
+### 第一步全局注册
 
 ```
 import Vue3ColorPicker from "vue3-colorpicker";
@@ -34,7 +34,7 @@ createApp(App)
   .mount("#app");
 ```
 
-OR
+或者局部注册
 
 ```vue3
 import { ColorPicker } from "vue3-colorpicker";
@@ -45,7 +45,7 @@ components: { ColorPicker },
 });
 ```
 
-### Usage
+### 使用组件
 
 ```vue3
 <template>
@@ -66,7 +66,8 @@ components: { ColorPicker },
      }
   });
 </script>
-
 ```
 
-[Live Demo](https://aesoper101.github.io/vue3-colorpicker/)
+具体文档请参考 [在线 demo 演示](https://aesoper101.github.io/vue3-colorpicker/)
+
+案例代码在 src/stories 目录下
