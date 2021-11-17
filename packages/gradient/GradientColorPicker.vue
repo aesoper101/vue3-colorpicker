@@ -18,7 +18,7 @@
                 },
               ]"
               ref="startGradientRef"
-              title="开始"
+              :title="lang === 'ZH-cn' ? '开始' : 'Start'"
               :style="{ left: getStartColorLeft + 'px' }"
             >
               <span class="vc-gradient__stop--inner"></span>
@@ -31,7 +31,7 @@
                 },
               ]"
               ref="stopGradientRef"
-              title="结束"
+              :title="lang === 'ZH-cn' ? '结束' : 'End'"
               :style="{ left: getEndColorLeft + 'px' }"
             >
               <span class="vc-gradient__stop--inner"></span>
@@ -66,7 +66,7 @@
 </template>
 
 <script lang="ts">
-  import { computed, defineComponent, reactive, ref } from "vue";
+  import { computed, defineComponent, inject, reactive, ref } from "vue";
   import propTypes from "vue-types";
   import { Angle } from "vue3-angle";
   import Alpha from "../common/Alpha.vue";
@@ -82,6 +82,7 @@
   import { tryOnMounted, useDebounceFn, useLocalStorage, whenever } from "@vueuse/core";
   import { DOMUtils } from "@aesoper/normal-utils";
   import tinycolor from "tinycolor2";
+  import { ColorPickerProvider, ColorPickerProviderKey } from "../utils/type";
 
   export default defineComponent({
     name: "GradientColorPicker",
@@ -122,6 +123,8 @@
         startColorRgba: props.startColor.toRgbString(),
         endColorRgba: props.endColor.toRgbString(),
       });
+
+      const parent = inject<ColorPickerProvider>(ColorPickerProviderKey);
 
       const advancePanelShow = ref(false);
 
@@ -364,6 +367,7 @@
         historyColors,
         onBack,
         onDegreeChange,
+        lang: parent?.lang,
       };
     },
   });

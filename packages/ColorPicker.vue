@@ -30,7 +30,15 @@
 </template>
 
 <script lang="ts">
-  import { computed, defineComponent, ExtractPropTypes, PropType, reactive, ref } from "vue";
+  import {
+    computed,
+    defineComponent,
+    ExtractPropTypes,
+    PropType,
+    provide,
+    reactive,
+    ref,
+  } from "vue";
   import FkColorPicker from "./fk/FkColorPicker.vue";
   import ChromeColorPicker from "./chrome/ChromeColorPicker.vue";
   import GradientColorPicker from "./gradient/GradientColorPicker.vue";
@@ -41,6 +49,7 @@
   import { onClickOutside, tryOnMounted, whenever } from "@vueuse/core";
   import { createPopper } from "@popperjs/core";
   import { GradientNode, parse, stringify } from "gradient-parser";
+  import { ColorPickerProvider, ColorPickerProviderKey, SupportLang } from "./utils/type";
 
   const colorPickerProps = {
     isWidget: propTypes.bool.def(false),
@@ -60,6 +69,10 @@
     roundHistory: propTypes.bool.def(false),
     useType: propTypes.oneOf(["single", "gradient", "both"]).def("single"),
     activeKey: propTypes.oneOf(["single", "gradient"]).def("single"),
+    lang: {
+      type: String as PropType<SupportLang>,
+      default: "ZH-cn",
+    },
   };
 
   export type ColorPickerProps = Partial<ExtractPropTypes<typeof colorPickerProps>>;
@@ -82,6 +95,10 @@
         pureColor: props.pureColor || "",
         activeKey: props.useType === "gradient" ? "gradient" : "single", //  "single" | "gradient"
         isAdvanceMode: false,
+      });
+
+      provide<ColorPickerProvider>(ColorPickerProviderKey, {
+        lang: computed(() => props.lang || "ZH-cn"),
       });
 
       const instance = new Color(state.pureColor);

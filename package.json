@@ -1,6 +1,6 @@
 {
   "name": "vue3-colorpicker",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "main": "dist/index.es.js",
   "types": "dist/types/index.d.ts",
   "author": "aesoper",
@@ -24,9 +24,10 @@
     "pub": "cd dist && npm publish --registry=https://registry.npmjs.org --access public && cd ..",
     "unpub": "npm unpublish vue3-colorpicker --force --registry=https://registry.npmjs.org",
     "prelink": "cd dist && yarn link && cd .. && yarn link vue3-colorpicker",
-    "deploy": "rimraf dist && yarn build && gh-pages -d dist",
+    "deploy": "gh-pages -d storybook-static",
     "storybook": "start-storybook -p 6006",
-    "build-storybook": "build-storybook"
+    "build-storybook": "rimraf storybook-static && build-storybook",
+    "reinstall": "rimraf node_modules && yarn install"
   },
   "dependencies": {
     "@aesoper/normal-utils": "^0.1.5",

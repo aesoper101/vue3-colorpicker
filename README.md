@@ -6,7 +6,7 @@ Note: This document is for Vue3ColorPicker v2. If you are looking for an older v
 
 [Live Demo](https://aesoper101.github.io/vue3-colorpicker/)
 
-[中文文档](./README.ZH-cn.md)
+[中文文档](https://github.com/aesoper101/vue3-colorpicker/blob/main/README.ZH-cn.md)
 
 ## Installation
 

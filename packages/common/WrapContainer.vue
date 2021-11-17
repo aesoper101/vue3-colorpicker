@@ -13,7 +13,7 @@
             @click="onActiveKeyChange('single')"
           >
             <button>
-              <div class="vc-btn__content">纯色</div>
+              <div class="vc-btn__content">{{ lang === "ZH-cn" ? "纯色" : "Pure" }}</div>
             </button>
           </div>
           <div
@@ -26,7 +26,7 @@
             @click="onActiveKeyChange('gradient')"
           >
             <button>
-              <div class="vc-btn__content">渐变色</div>
+              <div class="vc-btn__content">{{ lang === "ZH-cn" ? "渐变色" : "Gradient" }}</div>
             </button>
           </div>
           <div
@@ -44,9 +44,10 @@
 </template>
 
 <script lang="ts">
-  import { defineComponent, reactive } from "vue";
+  import { defineComponent, inject, reactive } from "vue";
   import propTypes from "vue-types";
   import { whenever } from "@vueuse/core";
+  import { ColorPickerProvider, ColorPickerProviderKey } from "../utils/type";
 
   export default defineComponent({
     name: "WrapContainer",
@@ -59,6 +60,8 @@
       const state = reactive({
         activeKey: props.activeKey,
       });
+
+      const parent = inject<ColorPickerProvider>(ColorPickerProviderKey);
 
       const onActiveKeyChange = (key: string) => {
         state.activeKey = key;
@@ -73,7 +76,7 @@
         }
       );
 
-      return { state, onActiveKeyChange };
+      return { state, onActiveKeyChange, lang: parent?.lang };
     },
   });
 </script>
