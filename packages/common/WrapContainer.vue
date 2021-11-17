@@ -7,10 +7,10 @@
             :class="[
               'vc-colorpicker--tabs__btn',
               {
-                'vc-btn-active': state.activeKey === 'single',
+                'vc-btn-active': state.activeKey === 'pure',
               },
             ]"
-            @click="onActiveKeyChange('single')"
+            @click="onActiveKeyChange('pure')"
           >
             <button>
               <div class="vc-btn__content">{{ lang === "ZH-cn" ? "纯色" : "Pure" }}</div>
@@ -53,7 +53,7 @@
     name: "WrapContainer",
     props: {
       showTab: propTypes.bool.def(false),
-      activeKey: propTypes.oneOf(["single", "gradient"]).def("single"),
+      activeKey: propTypes.oneOf(["pure", "gradient"]).def("pure"),
     },
     emits: ["update:activeKey", "change"],
     setup(props, { emit }) {

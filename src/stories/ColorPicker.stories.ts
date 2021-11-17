@@ -56,12 +56,12 @@ export default {
     },
     useType: {
       type: "string",
-      description: "single| gradient | both",
+      description: "pure | gradient | both",
       control: { type: "select" },
-      options: ["single", "gradient", "both"],
+      options: ["pure", "gradient", "both"],
       table: {
         defaultValue: {
-          summary: "single",
+          summary: "pure",
         },
       },
     },
