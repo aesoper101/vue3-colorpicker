@@ -7,6 +7,7 @@ import type { ColorPickerProps } from "./ColorPicker.vue";
 const Vue3ColorPicker: Plugin = {
   install: (app: App) => {
     app.component(ColorPicker.name, ColorPicker);
+    app.component("Vue3" + ColorPicker.name, ColorPicker);
   },
 };
 
