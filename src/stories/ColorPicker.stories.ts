@@ -103,6 +103,15 @@ export default {
       },
       description: "",
     },
+    zIndex: {
+      type: "number",
+      table: {
+        defaultValue: {
+          summary: 0,
+        },
+      },
+      description: "",
+    },
     lang: {
       type: "string",
       description: "ZH-cn | En",

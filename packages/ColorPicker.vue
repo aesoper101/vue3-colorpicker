@@ -11,12 +11,13 @@
     v-if="isWidget"
     :show-tab="useType === 'both'"
     @change="onActiveKeyChange"
+    :style="{ zIndex: zIndex }"
   >
     <component :is="getComponentName" :key="getComponentName" v-bind="getBindArgs" />
   </WrapContainer>
 
   <teleport to="body" v-if="!isWidget">
-    <div ref="pickerRef" v-show="showPicker">
+    <div ref="pickerRef" v-show="showPicker" :style="{ zIndex: zIndex }">
       <WrapContainer
         :show-tab="useType === 'both' && !state.isAdvanceMode"
         v-if="showPicker"
@@ -73,6 +74,7 @@
       type: String as PropType<SupportLang>,
       default: "ZH-cn",
     },
+    zIndex: propTypes.number.def(9999),
   };
 
   export type ColorPickerProps = Partial<ExtractPropTypes<typeof colorPickerProps>>;
