@@ -67,8 +67,8 @@
     disableAlpha: propTypes.bool.def(false),
     disableHistory: propTypes.bool.def(false),
     roundHistory: propTypes.bool.def(false),
-    useType: propTypes.oneOf(["single", "gradient", "both"]).def("single"),
-    activeKey: propTypes.oneOf(["single", "gradient"]).def("single"),
+    useType: propTypes.oneOf(["pure", "gradient", "both"]).def("pure"),
+    activeKey: propTypes.oneOf(["pure", "gradient"]).def("pure"),
     lang: {
       type: String as PropType<SupportLang>,
       default: "ZH-cn",
@@ -93,7 +93,7 @@
     setup(props, { emit }) {
       const state = reactive({
         pureColor: props.pureColor || "",
-        activeKey: props.useType === "gradient" ? "gradient" : "single", //  "single" | "gradient"
+        activeKey: props.useType === "gradient" ? "gradient" : "pure", //  "pure" | "gradient"
         isAdvanceMode: false,
       });
 
@@ -342,7 +342,7 @@
           if (state.activeKey !== "gradient" && value === "gradient") {
             state.activeKey = "gradient";
           } else {
-            state.activeKey = "single";
+            state.activeKey = "pure";
           }
         }
       );
