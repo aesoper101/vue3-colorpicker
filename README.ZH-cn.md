@@ -6,7 +6,7 @@
 
 [在线 demo 演示](https://aesoper101.github.io/vue3-colorpicker/)
 
-[English](./README.md)
+[English](https://github.com/aesoper101/vue3-colorpicker/blob/main/README.md)
 
 ## 安装
 

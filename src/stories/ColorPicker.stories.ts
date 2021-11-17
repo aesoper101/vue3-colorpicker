@@ -103,6 +103,17 @@ export default {
       },
       description: "",
     },
+    lang: {
+      type: "string",
+      description: "ZH-cn | En",
+      control: { type: "select" },
+      options: ["ZH-cn", "En"],
+      table: {
+        defaultValue: {
+          summary: "ZH-cn",
+        },
+      },
+    },
   } as Partial<ArgTypes<ColorPickerProps>>,
 } as Meta;
 

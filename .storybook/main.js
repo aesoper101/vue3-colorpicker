@@ -1,4 +1,4 @@
-// const path = require("path");
+const path = require("path");
 module.exports = {
   async viteFinal(config, { configType }) {
     if (configType === "DEVELOPMENT") {
@@ -10,6 +10,8 @@ module.exports = {
         port: 443,
         protocol: "ws",
       };
+    } else {
+      config.base = "/vue3-colorpicker/";
     }
     // return the customized config
     return config;
