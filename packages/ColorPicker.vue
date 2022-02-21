@@ -211,7 +211,7 @@
             gradientState.angle = Number(colorNode.orientation?.value) || 0;
 
             const [r, g, b, a] = startColorVal.value;
-            const [r1, g1, b1, a1] = startColorVal.value;
+            const [r1, g1, b1, a1] = endColorVal.value;
 
             gradientState.startColor = new Color({
               r: Number(r),
@@ -219,7 +219,7 @@
               b: Number(b),
               a: Number(a),
             });
-            gradientState.startColor = new Color({
+            gradientState.endColor = new Color({
               r: Number(r1),
               g: Number(g1),
               b: Number(b1),
