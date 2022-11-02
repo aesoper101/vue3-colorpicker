@@ -11,12 +11,10 @@
           <div class="vc-background" :style="gradientBg"></div>
           <div class="vc-gradient__stop__container">
             <div
-              :class="[
-                'vc-gradient__stop',
-                {
-                  'vc-gradient__stop--current': state.startActive,
-                },
-              ]"
+              class="vc-gradient__stop"
+              :class="{
+                'vc-gradient__stop--current': state.startActive,
+              }"
               ref="startGradientRef"
               :title="lang === 'ZH-cn' ? '开始' : 'Start'"
               :style="{ left: getStartColorLeft + 'px' }"
@@ -24,12 +22,10 @@
               <span class="vc-gradient__stop--inner"></span>
             </div>
             <div
-              :class="[
-                'vc-gradient__stop',
-                {
-                  'vc-gradient__stop--current': !state.startActive,
-                },
-              ]"
+              class="vc-gradient__stop"
+              :class="{
+                'vc-gradient__stop--current': !state.startActive,
+              }"
               ref="stopGradientRef"
               :title="lang === 'ZH-cn' ? '结束' : 'End'"
               :style="{ left: getEndColorLeft + 'px' }"
@@ -66,7 +62,7 @@
 </template>
 
 <script lang="ts">
-  import { computed, defineComponent, inject, reactive, ref } from "vue";
+  import { computed, defineComponent, inject, reactive, ref, watch } from "vue";
   import propTypes from "vue-types";
   import { Angle } from "vue3-angle";
   import Alpha from "../common/Alpha.vue";
@@ -132,6 +128,15 @@
       const startGradientRef = ref<HTMLElement>();
       const stopGradientRef = ref<HTMLElement>();
       const colorRangeRef = ref<HTMLElement>();
+
+      watch(
+        () => [props.startColor, props.endColor, props.angle],
+        (val: any[]) => {
+          state.startColor = val[0];
+          state.endColor = val[1];
+          state.angle = val[2];
+        }
+      );
 
       const currentColor = computed({
         get: () => {

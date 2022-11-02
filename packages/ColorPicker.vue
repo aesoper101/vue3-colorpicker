@@ -1,11 +1,13 @@
 <template>
   <div
-    :class="['vc-color-wrap', 'transparent', { round: shape === 'circle' }]"
+    class="vc-color-wrap transparent"
+    :class="{ round: shape === 'circle' }"
     v-if="!isWidget"
     ref="colorCubeRef"
   >
     <div class="current-color" :style="getBgColorStyle" @click="onShowPicker"></div>
   </div>
+
   <WrapContainer
     v-model:active-key="state.activeKey"
     v-if="isWidget"
@@ -60,7 +62,9 @@
       type: [String, Object] as PropType<ColorInputWithoutInstance>,
       default: "#000000",
     },
-    gradientColor: propTypes.string.def("#000"),
+    gradientColor: propTypes.string.def(
+      "linear-gradient(90deg, rgba(255, 255, 255, 1) 0%, rgba(0, 0, 0, 1) 100%)"
+    ),
     format: {
       type: String as PropType<ColorFormat>,
       default: "rgb",
@@ -117,12 +121,15 @@
         gradientColor: props.gradientColor,
       });
 
+      console.log("gradientColor", props.gradientColor);
+
       // Ref
       const showPicker = ref(false);
       const colorCubeRef = ref<HTMLElement | null>(null);
       const pickerRef = ref<HTMLElement | null>(null);
 
       const getBgColorStyle = computed(() => {
+        console.log(state.activeKey);
         const bgColor =
           state.activeKey !== "gradient"
             ? tinycolor(state.pureColor).toRgbString()
@@ -211,7 +218,7 @@
             gradientState.angle = Number(colorNode.orientation?.value) || 0;
 
             const [r, g, b, a] = startColorVal.value;
-            const [r1, g1, b1, a1] = startColorVal.value;
+            const [r1, g1, b1, a1] = endColorVal.value;
 
             gradientState.startColor = new Color({
               r: Number(r),
@@ -219,7 +226,7 @@
               b: Number(b),
               a: Number(a),
             });
-            gradientState.startColor = new Color({
+            gradientState.endColor = new Color({
               r: Number(r1),
               g: Number(g1),
               b: Number(b1),
