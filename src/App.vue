@@ -1,37 +1,69 @@
-<script setup lang="ts">
-  // This starter template is using Vue 3 <script setup> SFCs
-  // Check out https://v3.vuejs.org/api/sfc-script-setup.html#sfc-script-setup
-  import { ref } from "vue";
-  import { ColorInput } from "tinycolor2";
-  import { ColorPicker } from "../packages";
-
-  const color = ref<ColorInput>("red");
-
-  const color1 = ref<ColorInput>("green");
-
-  setTimeout(() => (color.value = "431893"), 100);
-</script>
-
 <template>
-  <img alt="Vue logo" src="./assets/logo.png" />
-  {{ color }}
-  <div>
-    <div style="display: inline-block">
-      <ColorPicker v-model:color="color" format="rgb" id="a1" round />
+  <div :style="bg" class="bg">{{ color }}</div>
+
+  <div :style="bgline" class="bg"> {{ gradientColor }} </div>
+
+  <div class="main">
+    <div class="color-pickers">
+      <ColorPicker v-model:pureColor="color" />
+      <ColorPicker v-model:pureColor="color" shape="circle" />
+      <ColorPicker v-model:gradientColor="gradientColor" useType="gradient" />
     </div>
-    <div style="display: inline-block; margin-left: 30px">
-      <ColorPicker v-model:color="color1" picker-type="chrome" format="rgb" id="a2" />
+
+    <div class="color-pickers">
+      <ColorPicker v-model:pureColor="color" is-widget />
+      <ColorPicker v-model:pureColor="color" is-widget pickerType="chrome" />
+      <ColorPicker
+        v-model:pureColor="color"
+        v-model:gradientColor="gradientColor"
+        is-widget
+        useType="both"
+      />
+
+      <ColorPicker v-model:gradientColor="gradientColor" is-widget useType="gradient" />
     </div>
   </div>
 </template>
 
+<script setup lang="ts">
+  import { computed, ref } from "vue";
+
+  const color = ref("blue");
+  const gradientColor = ref(
+    "linear-gradient(90deg, rgba(255, 255, 255, 1) 0%, rgba(0, 0, 0, 1) 100%)"
+  );
+
+  const bg = computed(() => {
+    return { background: color.value };
+  });
+  const bgline = computed(() => {
+    return { background: gradientColor.value };
+  });
+</script>
+
 <style>
-  #app {
+  body,
+  html {
+    margin: 0;
+    padding: 0;
     font-family: Avenir, Helvetica, Arial, sans-serif;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
     text-align: center;
-    color: #2c3e50;
-    margin-top: 60px;
+  }
+
+  .main {
+    padding: 40px 10%;
+  }
+
+  .color-pickers {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 20px;
+  }
+
+  .bg {
+    color: #fff;
+    font-size: 24px;
+    padding: 40px 0;
   }
 </style>
