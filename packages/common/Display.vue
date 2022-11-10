@@ -30,7 +30,7 @@
       const state = reactive({
         color: props.color,
         previewBgColor: props.color?.toRgbString(),
-        alpha: props.color?.alpha || 100,
+        alpha: props.color?.alpha ?? 100,
         hex: props.color?.hex,
       });
 
