@@ -99,7 +99,7 @@
     setup(props, { emit }) {
       const state = reactive({
         pureColor: props.pureColor || "",
-        activeKey: props.useType === "gradient" ? "gradient" : "pure", //  "pure" | "gradient"
+        activeKey: props.useType === "gradient" ? "gradient" : props.activeKey, //  "pure" | "gradient"
         isAdvanceMode: false,
       });
 

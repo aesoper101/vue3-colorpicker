@@ -17,6 +17,7 @@
         v-model:pureColor="color"
         v-model:gradientColor="gradientColor"
         is-widget
+        activeKey="gradient"
         useType="both"
       />
 
