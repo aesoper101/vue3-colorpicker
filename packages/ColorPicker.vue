@@ -121,15 +121,12 @@
         gradientColor: props.gradientColor,
       });
 
-      console.log("gradientColor", props.gradientColor);
-
       // Ref
       const showPicker = ref(false);
       const colorCubeRef = ref<HTMLElement | null>(null);
       const pickerRef = ref<HTMLElement | null>(null);
 
       const getBgColorStyle = computed(() => {
-        console.log(state.activeKey);
         const bgColor =
           state.activeKey !== "gradient"
             ? tinycolor(state.pureColor).toRgbString()
