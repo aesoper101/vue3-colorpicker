@@ -18,18 +18,20 @@
     <component :is="getComponentName" :key="getComponentName" v-bind="getBindArgs" />
   </WrapContainer>
 
-  <teleport to="body" v-if="!isWidget">
-    <div ref="pickerRef" v-show="showPicker" :style="{ zIndex: zIndex }">
-      <WrapContainer
-        :show-tab="useType === 'both' && !state.isAdvanceMode"
-        v-if="showPicker"
-        v-model:active-key="state.activeKey"
-        @change="onActiveKeyChange"
-      >
-        <component :is="getComponentName" :key="getComponentName" v-bind="getBindArgs" />
-      </WrapContainer>
-    </div>
-  </teleport>
+  <template v-if="!isWidget">
+    <teleport to="body">
+      <div ref="pickerRef" v-show="showPicker" :style="{ zIndex: zIndex }">
+        <WrapContainer
+          :show-tab="useType === 'both' && !state.isAdvanceMode"
+          v-if="showPicker"
+          v-model:active-key="state.activeKey"
+          @change="onActiveKeyChange"
+        >
+          <component :is="getComponentName" :key="getComponentName" v-bind="getBindArgs" />
+        </WrapContainer>
+      </div>
+    </teleport>
+  </template>
 </template>
 
 <script lang="ts">
@@ -49,7 +51,7 @@
   import tinycolor, { ColorInputWithoutInstance } from "tinycolor2";
   import propTypes from "vue-types";
   import { Color, ColorFormat } from "./utils/color";
-  import { onClickOutside, tryOnMounted, whenever } from "@vueuse/core";
+  import { onClickOutside, tryOnMounted, whenever, useDebounceFn } from "@vueuse/core";
   import { createPopper } from "@popperjs/core";
   import { GradientNode, parse, stringify } from "gradient-parser";
   import { ColorPickerProvider, ColorPickerProviderKey, SupportLang } from "./utils/type";
@@ -235,7 +237,7 @@
         }
       };
 
-      const onGradientChange = () => {
+      const onGradientChange = useDebounceFn(() => {
         const nodes = color2GradientNode();
         try {
           gradientState.gradientColor = stringify(nodes);
@@ -245,7 +247,7 @@
         } catch (e) {
           console.log(e);
         }
-      };
+      }, 600);
 
       const color2GradientNode = () => {
         const nodes: GradientNode[] = [];
@@ -274,13 +276,19 @@
 
       const onInit = () => {
         if (colorCubeRef.value && pickerRef.value) {
+          const offsetHeight =
+            window.innerHeight -
+            (colorCubeRef.value.offsetTop - window.pageYOffset) -
+            colorCubeRef.value.offsetHeight;
+
           createPopper(colorCubeRef.value, pickerRef.value, {
             placement: "auto",
             modifiers: [
               {
                 name: "flip",
                 options: {
-                  fallbackPlacements: ["top", "left"],
+                  boundary: offsetHeight > 500 ? "clippingParents" : colorCubeRef.value,
+                  fallbackPlacements: ["bottom", "left"],
                 },
               },
             ],
@@ -296,10 +304,10 @@
         emitColorChange();
       };
 
-      const emitColorChange = () => {
+      const emitColorChange = useDebounceFn(() => {
         emit("update:pureColor", state.pureColor);
         emit("pureColorChange", state.pureColor);
-      };
+      }, 600);
 
       onClickOutside(pickerRef, () => {
         onHidePicker();
@@ -312,11 +320,11 @@
       };
 
       tryOnMounted(() => {
-        onInit();
-        emitColorChange();
-
         parseGradientColor();
-        onGradientChange();
+        onInit();
+
+        // emitColorChange();
+        // onGradientChange();
       });
 
       whenever(

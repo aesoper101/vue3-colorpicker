@@ -1,6 +1,6 @@
 {
   "name": "vue3-colorpicker",
-  "version": "2.0.11",
+  "version": "2.0.12",
   "main": "index.es.js",
   "types": "types/index.d.ts",
   "author": "aesoper",

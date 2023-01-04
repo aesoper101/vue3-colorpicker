@@ -19,6 +19,8 @@
         is-widget
         activeKey="gradient"
         useType="both"
+        @gradientColorChange="onChange"
+        @pureColorChange="onChange"
       />
 
       <ColorPicker v-model:gradientColor="gradientColor" is-widget useType="gradient" />
@@ -40,6 +42,10 @@
   const bgline = computed(() => {
     return { background: gradientColor.value };
   });
+
+  const onChange = (val: string) => {
+    console.log(val);
+  };
 </script>
 
 <style>
