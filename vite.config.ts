@@ -10,7 +10,7 @@ export default defineConfig({
     hmr: {
       host: "localhost",
       port: 3001,
-      protocol: "wss",
+      protocol: "ws",
     },
   },
   plugins: [vue(), vueJsx()],

@@ -1,13 +1,4 @@
 <template>
-  <div
-    class="vc-color-wrap transparent"
-    :class="{ round: shape === 'circle' }"
-    v-if="!isWidget"
-    ref="colorCubeRef"
-  >
-    <div class="current-color" :style="getBgColorStyle" @click="onShowPicker"></div>
-  </div>
-
   <WrapContainer
     v-model:active-key="state.activeKey"
     v-if="isWidget"
@@ -19,6 +10,14 @@
   </WrapContainer>
 
   <template v-if="!isWidget">
+    <div
+      class="vc-color-wrap transparent"
+      :class="{ round: shape === 'circle' }"
+      ref="colorCubeRef"
+    >
+      <div class="current-color" :style="getBgColorStyle" @click="onShowPicker"></div>
+    </div>
+
     <teleport to="body">
       <div ref="pickerRef" v-show="showPicker" :style="{ zIndex: zIndex }">
         <WrapContainer
@@ -247,7 +246,7 @@
         } catch (e) {
           console.log(e);
         }
-      }, 600);
+      }, 300);
 
       const color2GradientNode = () => {
         const nodes: GradientNode[] = [];
@@ -276,10 +275,12 @@
 
       const onInit = () => {
         if (colorCubeRef.value && pickerRef.value) {
-          const offsetHeight =
-            window.innerHeight -
-            (colorCubeRef.value.offsetTop - window.pageYOffset) -
-            colorCubeRef.value.offsetHeight;
+          const offsetParent = colorCubeRef.value.offsetParent as HTMLElement;
+          const offsetTop = colorCubeRef.value.offsetTop || offsetParent?.offsetTop;
+          const offsetBottomHeight =
+            window.innerHeight - (offsetTop - window.pageYOffset) - colorCubeRef.value.offsetHeight;
+
+          console.log(offsetBottomHeight);
 
           createPopper(colorCubeRef.value, pickerRef.value, {
             placement: "auto",
@@ -287,7 +288,7 @@
               {
                 name: "flip",
                 options: {
-                  boundary: offsetHeight > 500 ? "clippingParents" : colorCubeRef.value,
+                  boundary: offsetBottomHeight > 500 ? "clippingParents" : colorCubeRef.value,
                   fallbackPlacements: ["bottom", "left"],
                 },
               },
@@ -307,7 +308,7 @@
       const emitColorChange = useDebounceFn(() => {
         emit("update:pureColor", state.pureColor);
         emit("pureColorChange", state.pureColor);
-      }, 600);
+      }, 300);
 
       onClickOutside(pickerRef, () => {
         onHidePicker();

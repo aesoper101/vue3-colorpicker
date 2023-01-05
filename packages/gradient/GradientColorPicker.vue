@@ -348,6 +348,7 @@
       whenever(
         () => currentColor.value,
         () => {
+          doColorChange();
           updateColorHistoryFn();
         },
         { deep: true }
