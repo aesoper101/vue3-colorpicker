@@ -51,7 +51,7 @@
     <Hue v-if="advancePanelShow" :color="currentColor" @change="onHueChange" />
     <Lightness v-if="!advancePanelShow" :color="currentColor" @change="onLightChange" />
     <Alpha :color="currentColor" @change="onAlphaChange" v-if="!disableAlpha" />
-    <Display :color="currentColor" :disable-alpha="disableAlpha" />
+    <Display :color="currentColor" :disable-alpha="disableAlpha" @change="onDisplayChange" />
     <History
       :round="roundHistory"
       :colors="historyColors"
@@ -270,6 +270,10 @@
         doColorChange();
       };
 
+      const onDisplayChange = () => {
+        doColorChange();
+      };
+
       const doColorChange = () => {
         if (state.startActive) {
           emit("update:startColor", state.startColor);
@@ -348,7 +352,6 @@
       whenever(
         () => currentColor.value,
         () => {
-          doColorChange();
           updateColorHistoryFn();
         },
         { deep: true }
@@ -373,6 +376,7 @@
         historyColors,
         onBack,
         onDegreeChange,
+        onDisplayChange,
         lang: parent?.lang,
       };
     },

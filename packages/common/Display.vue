@@ -4,19 +4,19 @@
       <div class="color-cube" :style="getBgColorStyle"></div>
     </div>
     <div class="vc-color-input">
-      <input v-model="hex" />
+      <input :value="state.hex" @input="onInputChange" />
     </div>
     <div class="vc-alpha-input" v-if="!disableAlpha">
-      <input class="vc-alpha-input__inner" v-model="alpha" />
+      <input class="vc-alpha-input__inner" :value="state.alpha" @input="onAlphaBlur" />
     </div>
   </div>
 </template>
 
 <script lang="ts">
-  import { computed, defineComponent, reactive, ref } from "vue";
+  import { computed, defineComponent, reactive } from "vue";
   import propTypes from "vue-types";
   import { Color } from "../utils/color";
-  import { whenever, debouncedWatch } from "@vueuse/core";
+  import { whenever, useDebounceFn } from "@vueuse/core";
   import tinycolor from "tinycolor2";
 
   export default defineComponent({
@@ -27,10 +27,10 @@
     },
     emits: ["update:color", "change"],
     setup(props, { emit }) {
-      const hex = ref<string | undefined>(props.color?.hex);
-      const alpha = ref<string | undefined>(props.color?.alpha + "%");
       const state = reactive({
         color: props.color,
+        hex: props.color?.hex,
+        alpha: props.color?.alpha + "%",
         previewBgColor: props.color?.toRgbString(),
       });
 
@@ -40,36 +40,41 @@
         };
       });
 
-      const onAlphaBlur = () => {
-        if (!alpha.value) {
+      const onAlphaBlur = useDebounceFn((event) => {
+        if (!event.target.value) {
           return;
         }
 
-        const opacity = parseInt(alpha.value.replace("%", ""));
+        const opacity = parseInt(event.target.value.replace("%", ""));
         if (!isNaN(opacity) && state.color) {
           state.color.alpha = opacity;
         }
-      };
 
-      const onInputChange = () => {
-        if (!hex.value) {
+        emit("update:color", state.color);
+        emit("change", state.color);
+      }, 300);
+
+      const onInputChange = useDebounceFn((event) => {
+        if (!event.target.value) {
           return;
         }
 
-        const _hex = hex.value.replace("#", "");
+        const _hex = event.target.value.replace("#", "");
         if (tinycolor(_hex).isValid() && state.color) {
           state.color.hex = _hex;
         }
-      };
 
-      debouncedWatch(hex, onInputChange, { debounce: 300 });
-      debouncedWatch(alpha, onAlphaBlur, { debounce: 300 });
+        emit("update:color", state.color);
+        emit("change", state.color);
+      }, 300);
 
       whenever(
         () => props.color,
         (value: Color) => {
           if (value) {
             state.color = value;
+            state.alpha = state.color.alpha + "%";
+            state.hex = state.color.hex;
           }
         },
         { deep: true }
@@ -80,17 +85,12 @@
         () => {
           if (state.color) {
             state.previewBgColor = state.color.toRgbString();
-            alpha.value = state.color.alpha + "%";
-            hex.value = state.color.hex;
-
-            emit("update:color", state.color);
-            emit("change", state.color);
           }
         },
         { deep: true }
       );
 
-      return { hex, alpha, state, getBgColorStyle, onAlphaBlur, onInputChange };
+      return { state, getBgColorStyle, onAlphaBlur, onInputChange };
     },
   });
 </script>
