@@ -280,8 +280,6 @@
           const offsetBottomHeight =
             window.innerHeight - (offsetTop - window.pageYOffset) - colorCubeRef.value.offsetHeight;
 
-          console.log(offsetBottomHeight);
-
           createPopper(colorCubeRef.value, pickerRef.value, {
             placement: "auto",
             modifiers: [
