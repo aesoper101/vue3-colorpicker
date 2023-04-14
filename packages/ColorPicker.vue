@@ -126,6 +126,7 @@
       const showPicker = ref(false);
       const colorCubeRef = ref<HTMLElement | null>(null);
       const pickerRef = ref<HTMLElement | null>(null);
+      let popper: any = null;
 
       const getBgColorStyle = computed(() => {
         const bgColor =
@@ -193,6 +194,9 @@
 
       const onShowPicker = () => {
         showPicker.value = true;
+        if (!popper) {
+          initPopper();
+        }
       };
 
       const onHidePicker = () => {
@@ -273,20 +277,15 @@
         return nodes;
       };
 
-      const onInit = () => {
+      const initPopper = () => {
         if (colorCubeRef.value && pickerRef.value) {
-          const offsetParent = colorCubeRef.value.offsetParent as HTMLElement;
-          const offsetTop = colorCubeRef.value.offsetTop || offsetParent?.offsetTop;
-          const offsetBottomHeight =
-            window.innerHeight - (offsetTop - window.pageYOffset) - colorCubeRef.value.offsetHeight;
-
-          createPopper(colorCubeRef.value, pickerRef.value, {
+          popper = createPopper(colorCubeRef.value, pickerRef.value, {
             placement: "auto",
             modifiers: [
               {
                 name: "flip",
                 options: {
-                  boundary: offsetBottomHeight > 500 ? "clippingParents" : colorCubeRef.value,
+                  boundary: "clippingParents",
                   fallbackPlacements: ["bottom", "left"],
                 },
               },
@@ -320,7 +319,7 @@
 
       tryOnMounted(() => {
         parseGradientColor();
-        onInit();
+        // onInit();
 
         // emitColorChange();
         // onGradientChange();
