@@ -280,7 +280,7 @@
       const initPopper = () => {
         if (colorCubeRef.value && pickerRef.value) {
           popper = createPopper(colorCubeRef.value, pickerRef.value, {
-            placement: "auto",
+            placement: "auto-start",
             modifiers: [
               {
                 name: "flip",
