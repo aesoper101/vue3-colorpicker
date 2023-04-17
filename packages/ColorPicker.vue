@@ -196,6 +196,8 @@
         showPicker.value = true;
         if (!popper) {
           initPopper();
+        } else {
+          popper.update();
         }
       };
 
