@@ -8,6 +8,10 @@
       <ColorPicker v-model:pureColor="color" picker-container="#app" />
       <ColorPicker v-model:pureColor="color" shape="circle" />
       <ColorPicker v-model:gradientColor="gradientColor" useType="gradient" />
+
+      <div style="position: fixed; bottom: 10px; right: 10px">
+        <ColorPicker v-model:gradientColor="gradientColor" useType="gradient" />
+      </div>
     </div>
 
     <div class="color-pickers">

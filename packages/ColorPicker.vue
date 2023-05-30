@@ -51,7 +51,7 @@
   import propTypes from "vue-types";
   import { Color, ColorFormat } from "./utils/color";
   import { onClickOutside, tryOnMounted, whenever, useDebounceFn } from "@vueuse/core";
-  import { createPopper } from "@popperjs/core";
+  import { createPopper, Instance } from "@popperjs/core";
   import { GradientNode, parse, stringify } from "gradient-parser";
   import { ColorPickerProvider, ColorPickerProviderKey, SupportLang } from "./utils/type";
 
@@ -103,21 +103,20 @@
       "activeKeyChange",
     ],
     setup(props, { emit }) {
+      provide<ColorPickerProvider>(ColorPickerProviderKey, {
+        lang: computed(() => props.lang || "ZH-cn"),
+      });
+
       const state = reactive({
         pureColor: props.pureColor || "",
         activeKey: props.useType === "gradient" ? "gradient" : props.activeKey, //  "pure" | "gradient"
         isAdvanceMode: false,
       });
 
-      provide<ColorPickerProvider>(ColorPickerProviderKey, {
-        lang: computed(() => props.lang || "ZH-cn"),
-      });
-
-      const instance = new Color(state.pureColor);
-      const colorInstance = ref(instance);
-
       const startColor = new Color("#000");
       const endColor = new Color("#000");
+      const instance = new Color(state.pureColor);
+
       const gradientState = reactive({
         startColor,
         endColor,
@@ -128,9 +127,12 @@
       });
 
       // Ref
+      const colorInstance = ref(instance);
       const showPicker = ref(false);
       const colorCubeRef = ref<HTMLElement | null>(null);
       const pickerRef = ref<HTMLElement | null>(null);
+
+      let popperInstance: Instance | null = null;
 
       const getBgColorStyle = computed(() => {
         const bgColor =
@@ -198,6 +200,11 @@
 
       const onShowPicker = () => {
         showPicker.value = true;
+        if (!popperInstance) {
+          initProper();
+        } else {
+          popperInstance.update();
+        }
       };
 
       const onHidePicker = () => {
@@ -278,20 +285,22 @@
         return nodes;
       };
 
-      const onInit = () => {
+      const initProper = () => {
         if (colorCubeRef.value && pickerRef.value) {
-          const offsetParent = colorCubeRef.value.offsetParent as HTMLElement;
-          const offsetTop = colorCubeRef.value.offsetTop || offsetParent?.offsetTop;
-          const offsetBottomHeight =
-            window.innerHeight - (offsetTop - window.pageYOffset) - colorCubeRef.value.offsetHeight;
-          createPopper(colorCubeRef.value, pickerRef.value, {
+          popperInstance = createPopper(colorCubeRef.value, pickerRef.value, {
             placement: "auto",
             modifiers: [
               {
+                name: "offset",
+                options: {
+                  offset: [0, 8],
+                },
+              },
+              {
                 name: "flip",
                 options: {
-                  boundary: offsetBottomHeight > 500 ? "clippingParents" : colorCubeRef.value,
-                  fallbackPlacements: ["bottom", "left"],
+                  allowedAutoPlacements: ["top", "bottom", "left", "right"],
+                  rootBoundary: "viewport",
                 },
               },
             ],
@@ -324,7 +333,7 @@
 
       tryOnMounted(() => {
         parseGradientColor();
-        onInit();
+        // onInit();
 
         // emitColorChange();
         // onGradientChange();
