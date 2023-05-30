@@ -18,7 +18,7 @@
       <div class="current-color" :style="getBgColorStyle" @click="onShowPicker"></div>
     </div>
 
-    <teleport to="body">
+    <teleport :to="pickerContainer">
       <div ref="pickerRef" v-show="showPicker" :style="{ zIndex: zIndex }">
         <WrapContainer
           :show-tab="useType === 'both' && !state.isAdvanceMode"
@@ -80,6 +80,11 @@
       default: "ZH-cn",
     },
     zIndex: propTypes.number.def(9999),
+    pickerContainer: {
+      type: String || HTMLElement,
+      default: "body",
+    },
+    debounce: propTypes.number.def(100),
   };
 
   export type ColorPickerProps = Partial<ExtractPropTypes<typeof colorPickerProps>>;
@@ -246,7 +251,7 @@
         } catch (e) {
           console.log(e);
         }
-      }, 300);
+      }, props.debounce);
 
       const color2GradientNode = () => {
         const nodes: GradientNode[] = [];
@@ -279,7 +284,6 @@
           const offsetTop = colorCubeRef.value.offsetTop || offsetParent?.offsetTop;
           const offsetBottomHeight =
             window.innerHeight - (offsetTop - window.pageYOffset) - colorCubeRef.value.offsetHeight;
-
           createPopper(colorCubeRef.value, pickerRef.value, {
             placement: "auto",
             modifiers: [
@@ -306,7 +310,7 @@
       const emitColorChange = useDebounceFn(() => {
         emit("update:pureColor", state.pureColor);
         emit("pureColorChange", state.pureColor);
-      }, 300);
+      }, props.debounce);
 
       onClickOutside(pickerRef, () => {
         onHidePicker();
@@ -368,7 +372,7 @@
           if (!equal) {
             state.pureColor = value;
             colorInstance.value = new Color(value);
-            emitColorChange();
+            // emitColorChange();
           }
         },
         { deep: true }

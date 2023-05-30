@@ -1,6 +1,6 @@
 {
   "name": "vue3-colorpicker",
-  "version": "2.1.2",
+  "version": "2.1.3",
   "main": "index.es.js",
   "types": "types/index.d.ts",
   "author": "aesoper",
@@ -11,25 +11,23 @@
   "homepage": "https://github.com/aesoper101/vue3-colorpicker#readme",
   "dependencies": {
     "@aesoper/normal-utils": "^0.1.5",
-    "@popperjs/core": "^2.10.1",
+    "@popperjs/core": "^2.11.8",
     "@vueuse/core": "^6.5.3",
     "gradient-parser": "^1.0.2",
     "lodash-es": "^4.17.21",
     "tinycolor2": "^1.4.2",
     "vue-types": "^4.1.0",
-    "vue3-angle": "^0.1.6",
-    "vue3-normal-library": "^0.1.6"
+    "vue3-angle": "^0.1.6"
   },
   "peerDependencies": {
     "@aesoper/normal-utils": "^0.1.5",
-    "@popperjs/core": "^2.10.1",
+    "@popperjs/core": "^2.11.8",
     "@vueuse/core": "^6.5.3",
     "gradient-parser": "^1.0.2",
     "lodash-es": "^4.17.21",
     "tinycolor2": "^1.4.2",
     "vue": "^3.2.6",
     "vue-types": "^4.1.0",
-    "vue3-angle": "^0.1.6",
-    "vue3-normal-library": "^0.1.6"
+    "vue3-angle": "^0.1.6"
   }
 }
