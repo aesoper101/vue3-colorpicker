@@ -5,20 +5,21 @@
 
   <div class="main">
     <div class="color-pickers">
-      <ColorPicker v-model:pureColor="color" />
+      <ColorPicker v-model:pureColor="color" picker-container="#app" />
       <ColorPicker v-model:pureColor="color" shape="circle" />
       <ColorPicker v-model:gradientColor="gradientColor" useType="gradient" />
     </div>
 
     <div class="color-pickers">
       <ColorPicker v-model:pureColor="color" is-widget />
-      <ColorPicker v-model:pureColor="color" is-widget pickerType="chrome" />
+      <ColorPicker v-model:pureColor="color" is-widget pickerType="chrome" :debounce="10" />
       <ColorPicker
         v-model:pureColor="color"
         v-model:gradientColor="gradientColor"
         is-widget
         activeKey="gradient"
         useType="both"
+        :debounce="10"
         @gradientColorChange="onChange"
         @pureColorChange="onChange"
       />

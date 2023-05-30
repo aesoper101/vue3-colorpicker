@@ -146,6 +146,7 @@
           border-radius: 0;
           outline: 0;
           cursor: pointer;
+          appearance: none;
           -webkit-appearance: none;
           font-weight: inherit;
 
