@@ -14,7 +14,7 @@
 </template>
 
 <script lang="ts">
-  import { computed, defineComponent, getCurrentInstance, reactive, ref } from "vue";
+  import { computed, defineComponent, getCurrentInstance, nextTick, reactive, ref } from "vue";
   import propTypes from "vue-types";
   import { clamp, Color } from "../utils/color";
   import { tryOnMounted, whenever } from "@vueuse/core";
@@ -109,7 +109,9 @@
             },
           });
 
-          updatePosition();
+          nextTick(() => {
+            updatePosition();
+          });
         }
       });
 

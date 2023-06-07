@@ -6,7 +6,7 @@
   <div class="main">
     <div class="color-pickers">
       <ColorPicker v-model:pureColor="color" picker-container="#app" />
-      <ColorPicker v-model:pureColor="color" shape="circle" />
+      <ColorPicker v-model:pureColor="color" shape="circle" pickerType="chrome" />
       <ColorPicker v-model:gradientColor="gradientColor" useType="gradient" />
 
       <div style="position: fixed; bottom: 10px; right: 10px">
