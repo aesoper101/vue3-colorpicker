@@ -142,7 +142,7 @@
       height: 100%;
       border-radius: 15px;
       background: linear-gradient(
-        to left,
+        to right,
         rgb(255, 0, 0) 0%,
         rgb(255, 255, 0) 16.66%,
         rgb(0, 255, 0) 33.33%,
