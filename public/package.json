@@ -1,6 +1,6 @@
 {
   "name": "vue3-colorpicker",
-  "version": "2.1.4",
+  "version": "2.1.5",
   "main": "index.es.js",
   "types": "types/index.d.ts",
   "author": "aesoper",
@@ -16,8 +16,7 @@
     "gradient-parser": "^1.0.2",
     "lodash-es": "^4.17.21",
     "tinycolor2": "^1.4.2",
-    "vue-types": "^4.1.0",
-    "vue3-angle": "^0.1.6"
+    "vue-types": "^4.1.0"
   },
   "peerDependencies": {
     "@aesoper/normal-utils": "^0.1.5",
@@ -27,7 +26,6 @@
     "lodash-es": "^4.17.21",
     "tinycolor2": "^1.4.2",
     "vue": "^3.2.6",
-    "vue-types": "^4.1.0",
-    "vue3-angle": "^0.1.6"
+    "vue-types": "^4.1.0"
   }
 }

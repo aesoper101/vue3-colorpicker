@@ -37,7 +37,7 @@
       </div>
       <div class="vc-picker-degree-input vc-degree-input">
         <div class="vc-degree-input__control">
-          <input :value="state.angle" @blur="onDegreeBlur" />
+          <input :value="state.angle" @blur="onDegreeBlur" />deg
         </div>
         <div class="vc-degree-input__panel">
           <div class="vc-degree-input__disk">
@@ -64,21 +64,20 @@
 <script lang="ts">
   import { computed, defineComponent, inject, reactive, ref, watch } from "vue";
   import propTypes from "vue-types";
-  import { Angle } from "vue3-angle";
+  import { tryOnMounted, useDebounceFn, useLocalStorage, whenever } from "@vueuse/core";
+  import { DOMUtils } from "@aesoper/normal-utils";
+  import tinycolor from "tinycolor2";
+
   import Alpha from "../common/Alpha.vue";
   import Palette from "../common/Palette.vue";
   import Board from "../common/Board.vue";
   import Hue from "../common/Hue.vue";
   import Lightness from "../common/Lightness.vue";
   import History from "../common/History.vue";
-
-  import "vue3-angle/style.css";
   import Display from "../common/Display.vue";
   import { Color, HistoryColorKey, MAX_STORAGE_LENGTH } from "../utils/color";
-  import { tryOnMounted, useDebounceFn, useLocalStorage, whenever } from "@vueuse/core";
-  import { DOMUtils } from "@aesoper/normal-utils";
-  import tinycolor from "tinycolor2";
   import { ColorPickerProvider, ColorPickerProviderKey } from "../utils/type";
+  import Angle from "../angle/Angle";
 
   export default defineComponent({
     name: "GradientColorPicker",

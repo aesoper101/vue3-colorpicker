@@ -43,17 +43,19 @@
     reactive,
     ref,
   } from "vue";
+  import { onClickOutside, tryOnMounted, whenever, useDebounceFn } from "@vueuse/core";
+  import tinycolor, { ColorInputWithoutInstance } from "tinycolor2";
+  import { GradientNode, parse, stringify } from "gradient-parser";
+  import { createPopper, Instance } from "@popperjs/core";
+  import propTypes from "vue-types";
+
   import FkColorPicker from "./fk/FkColorPicker.vue";
   import ChromeColorPicker from "./chrome/ChromeColorPicker.vue";
   import GradientColorPicker from "./gradient/GradientColorPicker.vue";
   import WrapContainer from "./common/WrapContainer.vue";
-  import tinycolor, { ColorInputWithoutInstance } from "tinycolor2";
-  import propTypes from "vue-types";
-  import { Color, ColorFormat } from "./utils/color";
-  import { onClickOutside, tryOnMounted, whenever, useDebounceFn } from "@vueuse/core";
-  import { createPopper, Instance } from "@popperjs/core";
-  import { GradientNode, parse, stringify } from "gradient-parser";
+
   import { ColorPickerProvider, ColorPickerProviderKey, SupportLang } from "./utils/type";
+  import { Color, ColorFormat } from "./utils/color";
 
   const colorPickerProps = {
     isWidget: propTypes.bool.def(false),
