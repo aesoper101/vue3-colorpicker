@@ -150,14 +150,29 @@
         if (state.activeKey === "gradient") {
           return GradientColorPicker.name;
         }
+
         return props.pickerType === "fk" ? FkColorPicker.name : ChromeColorPicker.name;
       });
 
+      const onAdvanceChange = (isAdvance: boolean) => {
+        state.isAdvanceMode = isAdvance;
+      };
+
       const getBindArgs = computed(() => {
+        const commonProps = {
+          disableAlpha: props.disableAlpha,
+          disableHistory: props.disableHistory,
+          roundHistory: props.roundHistory,
+        };
+
         if (state.activeKey === "gradient") {
           return {
+            ...commonProps,
             startColor: gradientState.startColor,
             endColor: gradientState.endColor,
+            angle: gradientState.angle,
+            startColorStop: gradientState.startColorStop,
+            endColorStop: gradientState.endColorStop,
             onStartColorChange: (v: Color) => {
               gradientState.startColor = v;
               onGradientChange();
@@ -166,9 +181,6 @@
               gradientState.endColor = v;
               onGradientChange();
             },
-            angle: gradientState.angle,
-            startColorStop: gradientState.startColorStop,
-            endColorStop: gradientState.endColorStop,
             onStartColorStopChange: (v: number) => {
               gradientState.startColorStop = v;
               onGradientChange();
@@ -181,12 +193,12 @@
               gradientState.angle = v;
               onGradientChange();
             },
-            onAdvanceChange: (v: boolean) => {
-              state.isAdvanceMode = v;
-            },
+            onAdvanceChange: onAdvanceChange,
           };
         }
+
         return {
+          ...commonProps,
           disableAlpha: props.disableAlpha,
           disableHistory: props.disableHistory,
           roundHistory: props.roundHistory,
@@ -195,10 +207,6 @@
           onAdvanceChange: onAdvanceChange,
         };
       });
-
-      const onAdvanceChange = (isAdvance: boolean) => {
-        state.isAdvanceMode = isAdvance;
-      };
 
       const onShowPicker = () => {
         showPicker.value = true;

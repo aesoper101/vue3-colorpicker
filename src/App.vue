@@ -15,20 +15,39 @@
     </div>
 
     <div class="color-pickers">
-      <ColorPicker v-model:pureColor="color" is-widget />
-      <ColorPicker v-model:pureColor="color" is-widget pickerType="chrome" :debounce="10" />
-      <ColorPicker
-        v-model:pureColor="color"
-        v-model:gradientColor="gradientColor"
-        is-widget
-        activeKey="gradient"
-        useType="both"
-        :debounce="10"
-        @gradientColorChange="onChange"
-        @pureColorChange="onChange"
-      />
+      <div>
+        <ColorPicker v-model:pureColor="color" is-widget />
+        <div>pickerType: fk</div>
+      </div>
+      <div>
+        <ColorPicker v-model:pureColor="color" is-widget pickerType="chrome" :debounce="10" />
+        <div>pickerType: chrome</div>
+      </div>
 
-      <ColorPicker v-model:gradientColor="gradientColor" is-widget useType="gradient" />
+      <div>
+        <ColorPicker
+          v-model:pureColor="color"
+          v-model:gradientColor="gradientColor"
+          is-widget
+          activeKey="gradient"
+          useType="both"
+          :debounce="10"
+          @gradientColorChange="onChange"
+          @pureColorChange="onChange"
+        />
+        <div> <div>useType: both</div></div>
+      </div>
+
+      <div>
+        <ColorPicker
+          pickerType="chrome"
+          useType="gradient"
+          v-model:gradientColor="gradientColor"
+          :disableHistory="true"
+          is-widget
+        />
+        <div> <div>useType: gradient</div></div>
+      </div>
     </div>
   </div>
 </template>
