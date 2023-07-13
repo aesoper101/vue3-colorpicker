@@ -1,0 +1,31 @@
+{
+  "name": "vue3-colorpicker",
+  "version": "2.1.5",
+  "main": "index.es.js",
+  "types": "types/index.d.ts",
+  "author": "aesoper",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/aesoper101/vue3-colorpicker/issues"
+  },
+  "homepage": "https://github.com/aesoper101/vue3-colorpicker#readme",
+  "dependencies": {
+    "@aesoper/normal-utils": "^0.1.5",
+    "@popperjs/core": "^2.11.8",
+    "@vueuse/core": "^10.1.2",
+    "gradient-parser": "^1.0.2",
+    "lodash-es": "^4.17.21",
+    "tinycolor2": "^1.4.2",
+    "vue-types": "^4.1.0"
+  },
+  "peerDependencies": {
+    "@aesoper/normal-utils": "^0.1.5",
+    "@popperjs/core": "^2.11.8",
+    "@vueuse/core": "^10.1.2",
+    "gradient-parser": "^1.0.2",
+    "lodash-es": "^4.17.21",
+    "tinycolor2": "^1.4.2",
+    "vue": "^3.2.6",
+    "vue-types": "^4.1.0"
+  }
+}
