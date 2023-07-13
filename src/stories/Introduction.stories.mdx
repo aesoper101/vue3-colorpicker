@@ -8,7 +8,7 @@ A very beautiful color picker, supports input and output of multiple color forma
 
 [Live Demo](https://aesoper101.github.io/vue3-colorpicker/)
 
-<!-- <a href="https://aesoper101.github.io/vue3-colorpicker/" target="_blank">Live Demo</a> -->
+{/* <a href="https://aesoper101.github.io/vue3-colorpicker/" target="_blank">Live Demo</a> */}
 
 ## Installation
 
@@ -69,4 +69,16 @@ components: { ColorPicker },
   });
 </script>
 
+```
+
+### Nuxt3 Build Issue
+
+you can add the config in nuxt.config.ts:
+
+```
+export default defineNuxtConfig({
+  build: {
+    transpile: ['vue3-colorpicker']
+  },
+})
 ```

@@ -2,7 +2,7 @@ import { App, Plugin } from "vue";
 
 import "./styles/index.scss";
 import ColorPicker from "./ColorPicker.vue";
-import type ColorPickerProps from "./ColorPicker.vue";
+import type { ColorPickerProps } from "./ColorPicker.vue";
 
 const Vue3ColorPicker: Plugin = {
   install: (app: App) => {
@@ -11,6 +11,6 @@ const Vue3ColorPicker: Plugin = {
   },
 };
 
-export { ColorPicker, ColorPickerProps };
+export { ColorPicker, type ColorPickerProps };
 
 export default Vue3ColorPicker;

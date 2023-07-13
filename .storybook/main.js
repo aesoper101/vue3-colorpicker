@@ -1,6 +1,8 @@
 const path = require("path");
 module.exports = {
-  async viteFinal(config, { configType }) {
+  async viteFinal(config, {
+    configType
+  }) {
     if (configType === "DEVELOPMENT") {
       // customize the Vite config here
       config.server.port = 6001;
@@ -8,7 +10,7 @@ module.exports = {
       config.server.host = true;
       config.server.hmr = {
         port: 443,
-        protocol: "ws",
+        protocol: "ws"
       };
     } else {
       config.base = "/vue3-colorpicker/";
@@ -17,20 +19,19 @@ module.exports = {
     return config;
   },
   stories: ["../src/**/*.stories.mdx", "../src/**/*.stories.@(js|jsx|ts|tsx)"],
-  addons: [
-    "@storybook/addon-links",
-    {
-      name: "@storybook/addon-docs",
-      options: {
-        sourceLoaderOptions: {
-          injectStoryParameters: false,
-        },
-      },
-    },
-    "@storybook/addon-essentials",
-  ],
-  framework: "@storybook/vue3",
-  core: {
-    builder: "storybook-builder-vite",
+  addons: ["@storybook/addon-links", {
+    name: "@storybook/addon-docs",
+    options: {
+      sourceLoaderOptions: {
+        injectStoryParameters: false
+      }
+    }
+  }, "@storybook/addon-essentials", "@storybook/addon-mdx-gfm"],
+  framework: {
+    name: "@storybook/vue3-vite",
+    options: {}
   },
+  docs: {
+    autodocs: true
+  }
 };

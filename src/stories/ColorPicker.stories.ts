@@ -1,5 +1,6 @@
-import { ArgTypes, Meta, Story } from "@storybook/vue3";
-import { ColorPicker, ColorPickerProps } from "../../packages";
+import { ArgTypes, Meta, type StoryFn } from "@storybook/vue3";
+import { ColorPicker } from "../../packages";
+import type { ColorPickerProps } from "../../packages";
 import { ref } from "vue";
 import { ColorInput } from "tinycolor2";
 
@@ -126,7 +127,7 @@ export default {
   } as Partial<ArgTypes<ColorPickerProps>>,
 } as Meta;
 
-const Template: Story<ColorPickerProps> = (args: ColorPickerProps) => {
+const Template: StoryFn<ColorPickerProps> = (args: ColorPickerProps) => {
   return {
     components: { ColorPicker },
     setup() {
@@ -143,7 +144,7 @@ const Template: Story<ColorPickerProps> = (args: ColorPickerProps) => {
   };
 };
 
-export const Square: Story<ColorPickerProps> = Template.bind({});
+export const Square: StoryFn<ColorPickerProps> = Template.bind({});
 
 Square.args = {
   isWidget: false,
@@ -151,7 +152,7 @@ Square.args = {
   shape: "square",
 };
 
-export const Circle: Story<ColorPickerProps> = Template.bind({});
+export const Circle: StoryFn<ColorPickerProps> = Template.bind({});
 
 Circle.args = {
   isWidget: false,
@@ -159,7 +160,7 @@ Circle.args = {
   shape: "circle",
 };
 
-export const Gradient: Story<ColorPickerProps> = Template.bind({});
+export const Gradient: StoryFn<ColorPickerProps> = Template.bind({});
 
 Gradient.args = {
   isWidget: false,
@@ -168,7 +169,7 @@ Gradient.args = {
   useType: "gradient",
 };
 
-export const PopupUseTypeBoth: Story<ColorPickerProps> = Template.bind({});
+export const PopupUseTypeBoth: StoryFn<ColorPickerProps> = Template.bind({});
 
 PopupUseTypeBoth.args = {
   isWidget: false,
@@ -177,7 +178,7 @@ PopupUseTypeBoth.args = {
   useType: "both",
 };
 
-export const PopupUseTypeBothWidget: Story<ColorPickerProps> = Template.bind({});
+export const PopupUseTypeBothWidget: StoryFn<ColorPickerProps> = Template.bind({});
 
 PopupUseTypeBothWidget.args = {
   isWidget: true,
@@ -186,21 +187,21 @@ PopupUseTypeBothWidget.args = {
   useType: "both",
 };
 
-export const FK: Story<ColorPickerProps> = Template.bind({});
+export const FK: StoryFn<ColorPickerProps> = Template.bind({});
 
 FK.args = {
   isWidget: true,
   pickerType: "fk",
 };
 
-export const Chrome: Story<ColorPickerProps> = Template.bind({});
+export const Chrome: StoryFn<ColorPickerProps> = Template.bind({});
 
 Chrome.args = {
   isWidget: true,
   pickerType: "chrome",
 };
 
-export const RoundHistory: Story<ColorPickerProps> = Template.bind({});
+export const RoundHistory: StoryFn<ColorPickerProps> = Template.bind({});
 
 RoundHistory.args = {
   isWidget: true,
@@ -208,7 +209,7 @@ RoundHistory.args = {
   roundHistory: true,
 };
 
-export const DisableHistory: Story<ColorPickerProps> = Template.bind({});
+export const DisableHistory: StoryFn<ColorPickerProps> = Template.bind({});
 
 DisableHistory.args = {
   isWidget: true,
@@ -216,7 +217,7 @@ DisableHistory.args = {
   disableHistory: true,
 };
 
-export const DisableAlpha: Story<ColorPickerProps> = Template.bind({});
+export const DisableAlpha: StoryFn<ColorPickerProps> = Template.bind({});
 
 DisableAlpha.args = {
   isWidget: true,

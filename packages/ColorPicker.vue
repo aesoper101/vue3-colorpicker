@@ -89,7 +89,9 @@
     debounce: propTypes.number.def(100),
   };
 
-  export type ColorPickerProps = Partial<ExtractPropTypes<typeof colorPickerProps>>;
+  type ColorPickerProps = Partial<ExtractPropTypes<typeof colorPickerProps>>;
+
+  export { ColorPickerProps };
 
   export default defineComponent({
     name: "ColorPicker",
