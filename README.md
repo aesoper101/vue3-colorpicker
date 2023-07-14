@@ -8,6 +8,8 @@ Note: This document is for Vue3ColorPicker v2. If you are looking for an older v
 
 [中文文档](https://github.com/aesoper101/vue3-colorpicker/blob/main/README.ZH-cn.md)
 
+![Vue3-colorpicker](src/assets/example.jpg)
+
 ## Installation
 
 ```

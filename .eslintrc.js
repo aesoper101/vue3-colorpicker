@@ -22,6 +22,7 @@ module.exports = {
     "prettier",
     "plugin:prettier/recommended",
     "plugin:jest/recommended",
+    "plugin:storybook/recommended",
   ],
   rules: {
     "@typescript-eslint/ban-ts-ignore": "off",
