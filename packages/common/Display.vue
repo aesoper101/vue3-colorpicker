@@ -45,7 +45,23 @@
           return;
         }
 
-        const opacity = parseInt(event.target.value.replace("%", ""));
+        let opacity = parseInt(event.target.value.replace("%", ""));
+
+        if (opacity > 100) {
+          event.target.value = "100%";
+          opacity = 100;
+        }
+
+        if (opacity < 0) {
+          event.target.value = "0%";
+          opacity = 0;
+        }
+
+        if (isNaN(opacity)) {
+          event.target.value = "100%";
+          opacity = 100;
+        }
+
         if (!isNaN(opacity) && state.color) {
           state.color.alpha = opacity;
         }
