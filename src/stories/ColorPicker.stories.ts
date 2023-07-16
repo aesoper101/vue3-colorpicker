@@ -124,6 +124,24 @@ export default {
         },
       },
     },
+    debounce: {
+      type: "number",
+      table: {
+        defaultValue: {
+          summary: 0,
+        },
+      },
+      description: "Debounce timer for the 'change' event.",
+    },
+    pickerContainer: {
+      type: "string",
+      table: {
+        defaultValue: {
+          summary: "body",
+        },
+      },
+      description: "the mount node for Picker",
+    },
   } as Partial<ArgTypes<ColorPickerProps>>,
 } as Meta;
 

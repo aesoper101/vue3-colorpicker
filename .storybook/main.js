@@ -26,7 +26,7 @@ module.exports = {
         injectStoryParameters: false
       }
     }
-  }, "@storybook/addon-essentials", "@storybook/addon-mdx-gfm"],
+  }, "@storybook/addon-essentials"],
   framework: {
     name: "@storybook/vue3-vite",
     options: {}

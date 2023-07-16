@@ -47,7 +47,6 @@
     "@storybook/addon-docs": "^7.0.18",
     "@storybook/addon-essentials": "^7.0.18",
     "@storybook/addon-links": "^7.0.18",
-    "@storybook/addon-mdx-gfm": "^7.0.18",
     "@storybook/addon-storysource": "^7.0.18",
     "@storybook/cli": "^7.0.27",
     "@storybook/vue3": "^7.0.27",
