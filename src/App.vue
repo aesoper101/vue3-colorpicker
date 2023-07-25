@@ -17,11 +17,11 @@
     <div class="color-pickers">
       <div>
         <ColorPicker v-model:pureColor="color" is-widget />
-        <div>pickerType: fk</div>
+        <h3>pickerType: fk</h3>
       </div>
       <div>
         <ColorPicker v-model:pureColor="color" is-widget pickerType="chrome" :debounce="10" />
-        <div>pickerType: chrome</div>
+        <h3>pickerType: chrome</h3>
       </div>
 
       <div>
@@ -35,18 +35,19 @@
           @gradientColorChange="onChange"
           @pureColorChange="onChange"
         />
-        <div> <div>useType: both</div></div>
+        <h3>useType: both</h3>
       </div>
 
       <div>
         <ColorPicker
+          theme="black"
           pickerType="chrome"
           useType="gradient"
           v-model:gradientColor="gradientColor"
           :disableHistory="true"
           is-widget
         />
-        <div> <div>useType: gradient</div></div>
+        <h3>useType: gradient</h3>
       </div>
     </div>
   </div>

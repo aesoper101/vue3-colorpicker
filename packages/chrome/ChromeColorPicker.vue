@@ -3,9 +3,9 @@
     <Board :round="true" :hide="false" :color="state.color" @change="onBoardChange" />
     <div class="vc-chrome-colorPicker-body">
       <div class="chrome-controls">
-        <div class="chrome-color-wrap transparent">
+        <!-- <div class="chrome-color-wrap transparent">
           <div class="current-color" :style="previewStyle"></div>
-        </div>
+        </div> -->
         <div class="chrome-sliders">
           <Hue size="small" :color="state.color" @change="onHueChange" />
           <Alpha size="small" :color="state.color" @change="onAlphaChange" v-if="!disableAlpha" />
@@ -139,12 +139,10 @@
     box-sizing: border-box;
     border-radius: 3px;
     user-select: none;
-    background-color: white;
+    background-color: initial;
 
     &-body {
       position: relative;
-      //padding: 0 12px;
-      background-color: #fff;
 
       .chrome-controls {
         display: flex;

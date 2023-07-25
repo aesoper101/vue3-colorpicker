@@ -5,6 +5,7 @@
     :show-tab="useType === 'both'"
     @change="onActiveKeyChange"
     :style="{ zIndex: zIndex }"
+    :theme="theme"
   >
     <component :is="getComponentName" :key="getComponentName" v-bind="getBindArgs" />
   </WrapContainer>
@@ -25,6 +26,7 @@
           v-if="showPicker"
           v-model:active-key="state.activeKey"
           @change="onActiveKeyChange"
+          :theme="theme"
         >
           <component :is="getComponentName" :key="getComponentName" v-bind="getBindArgs" />
         </WrapContainer>
@@ -87,6 +89,7 @@
       default: "body",
     },
     debounce: propTypes.number.def(100),
+    theme: propTypes.oneOf(["white", "black"]).def("white"),
   };
 
   type ColorPickerProps = Partial<ExtractPropTypes<typeof colorPickerProps>>;

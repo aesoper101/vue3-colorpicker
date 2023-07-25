@@ -1,5 +1,5 @@
 <template>
-  <div class="vc-colorpicker">
+  <div class="vc-colorpicker" :class="theme">
     <div class="vc-colorpicker--container">
       <div class="vc-colorpicker--tabs" v-if="showTab">
         <div class="vc-colorpicker--tabs__inner">
@@ -52,6 +52,7 @@
   export default defineComponent({
     name: "WrapContainer",
     props: {
+      theme: propTypes.oneOf(["white", "black"]).def("white"),
       showTab: propTypes.bool.def(false),
       activeKey: propTypes.oneOf(["pure", "gradient"]).def("pure"),
     },
@@ -88,9 +89,7 @@
     border-radius: 3px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.15);
     user-select: none;
-    background-color: white;
     width: 276px;
-    padding-bottom: 10px;
     z-index: 10000;
 
     * {
@@ -167,6 +166,16 @@
         z-index: 1;
         transition: left 0.2s ease-in-out;
       }
+    }
+
+    &.black {
+      background-color: black;
+      color: #fff;
+    }
+
+    &.white {
+      background-color: white;
+      color: #333;
     }
   }
 </style>

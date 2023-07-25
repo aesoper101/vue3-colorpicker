@@ -168,7 +168,7 @@
     box-sizing: border-box;
     border-radius: 3px;
     user-select: none;
-    background-color: white;
+    background-color: initial;
 
     &__inner {
       position: relative;

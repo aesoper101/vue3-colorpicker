@@ -3,17 +3,33 @@
     <div class="vc-current-color vc-transparent">
       <div class="color-cube" :style="getBgColorStyle"></div>
     </div>
-    <div class="vc-color-input">
-      <input :value="state.hex" @input="onInputChange" />
-    </div>
-    <div class="vc-alpha-input" v-if="!disableAlpha">
-      <input class="vc-alpha-input__inner" :value="state.alpha" @input="onAlphaBlur" />
-    </div>
+    <template v-if="inputType === 'hex'">
+      <div style="display: flex; flex: 1; gap: 4px; height: 100%">
+        <div class="vc-color-input">
+          <input :value="state.hex" @input="onInputChange" />
+        </div>
+        <div class="vc-alpha-input" v-if="!disableAlpha">
+          <input class="vc-alpha-input__inner" :value="state.alpha" @input="onAlphaBlur" />
+        </div>
+      </div>
+    </template>
+    <template v-else-if="state.rgba">
+      <div style="display: flex; flex: 1; gap: 4px; height: 100%">
+        <div class="vc-rgb-input" v-for="(v, i) in state.rgba" :key="i">
+          <div>
+            <input :value="v" @input="(e) => onInputChange(e, i)" />
+          </div>
+          <div>{{ ["R", "G", "B", "A"][i] }}</div>
+        </div>
+      </div>
+    </template>
+
+    <div class="vc-input-toggle" @click="onInputTypeChange"></div>
   </div>
 </template>
 
 <script lang="ts">
-  import { computed, defineComponent, reactive } from "vue";
+  import { computed, defineComponent, reactive, ref } from "vue";
   import propTypes from "vue-types";
   import { Color } from "../utils/color";
   import { whenever, useDebounceFn } from "@vueuse/core";
@@ -27,10 +43,12 @@
     },
     emits: ["update:color", "change"],
     setup(props, { emit }) {
+      const inputType = ref<"hex" | "rgba">("hex");
       const state = reactive({
         color: props.color,
         hex: props.color?.hex,
         alpha: props.color?.alpha + "%",
+        rgba: props.color?.RGB,
         previewBgColor: props.color?.toRgbString(),
       });
 
@@ -39,6 +57,10 @@
           background: state.previewBgColor,
         };
       });
+
+      const onInputTypeChange = () => {
+        inputType.value = inputType.value === "rgba" ? "hex" : "rgba";
+      };
 
       const onAlphaBlur = useDebounceFn((event) => {
         if (!event.target.value) {
@@ -70,14 +92,22 @@
         emit("change", state.color);
       }, 300);
 
-      const onInputChange = useDebounceFn((event) => {
+      const onInputChange = useDebounceFn((event, key?: number) => {
+        console.log(event.target.value);
         if (!event.target.value) {
           return;
         }
 
-        const _hex = event.target.value.replace("#", "");
-        if (tinycolor(_hex).isValid() && state.color) {
-          state.color.hex = _hex;
+        if (inputType.value === "hex") {
+          const _hex = event.target.value.replace("#", "");
+          if (tinycolor(_hex).isValid() && state.color) {
+            state.color.hex = _hex;
+          }
+        } else if (key !== undefined && state.rgba && state.color) {
+          state.rgba[key] = Number(event.target.value);
+          const [r, g, b, a] = state.rgba;
+          state.color.hex = tinycolor({ r, g, b }).toHex();
+          state.color.alpha = Math.floor(a * 100);
         }
 
         emit("update:color", state.color);
@@ -89,8 +119,9 @@
         (value: Color) => {
           if (value) {
             state.color = value;
-            state.alpha = state.color.alpha + "%";
+            state.alpha = Math.floor(state.color.alpha) + "%";
             state.hex = state.color.hex;
+            state.rgba = state.color.RGB;
           }
         },
         { deep: true }
@@ -106,23 +137,26 @@
         { deep: true }
       );
 
-      return { state, getBgColorStyle, onAlphaBlur, onInputChange };
+      return { state, getBgColorStyle, inputType, onInputTypeChange, onAlphaBlur, onInputChange };
     },
   });
 </script>
 
 <style lang="scss" scoped>
+  $backGroundColor: rgba(200, 200, 200, 0.25);
+  $color: #666;
+
   .vc-display {
-    margin-top: 16px;
     height: 28px;
     display: flex;
     align-items: center;
+    gap: 8px;
 
     .vc-current-color {
-      margin-right: 10px;
       width: 50px;
       height: 100%;
       box-shadow: 3px 0 5px #00000014;
+      border-radius: 2px;
       position: relative;
       cursor: pointer;
       overflow: hidden;
@@ -156,15 +190,36 @@
         font-size: 14px;
         text-align: center;
         box-sizing: border-box;
-        background-color: #f1f2f4;
-        border-radius: 4px;
+        background-color: $backGroundColor;
+        color: $color;
+        border-radius: 2px;
         height: 100%;
         width: 100%;
       }
     }
 
+    .vc-rgb-input {
+      flex: 1;
+      font-size: 12px;
+      color: $color;
+
+      input {
+        padding: 4px 0;
+        margin-bottom: 2px;
+        border: 0;
+        outline: none;
+        cursor: pointer;
+        color: #33383e;
+        font-size: 14px;
+        text-align: center;
+        background-color: $backGroundColor;
+        color: $color;
+        border-radius: 2px;
+        width: 100%;
+      }
+    }
+
     .vc-alpha-input {
-      margin-left: 8px;
       width: 56px;
       height: 100%;
       border: none;
@@ -174,15 +229,16 @@
       justify-content: center;
       -ms-flex-align: center;
       align-items: center;
-      background-color: #f1f2f4;
-      border-radius: 4px;
+      border-radius: 2px;
       font-size: 14px;
 
       > input {
         width: 100%;
+        height: 100%;
         padding: 0;
         text-align: center;
-        color: inherit;
+        background-color: $backGroundColor;
+        color: $color;
         font-size: inherit;
       }
 
@@ -192,12 +248,39 @@
         color: #000;
         font-size: 14px;
         line-height: 20px;
-        background: transparent;
         outline: none;
         border: none;
         display: block;
         box-sizing: border-box;
         cursor: pointer;
+      }
+    }
+
+    .vc-input-toggle {
+      height: 10px;
+      width: 8px;
+      padding: 4px;
+      cursor: pointer;
+
+      &:hover {
+        background-color: #efefef;
+      }
+
+      &::before {
+        content: "";
+        display: block;
+        border-bottom: 4px solid #888;
+        border-left: 4px solid transparent;
+        border-right: 4px solid transparent;
+        margin-bottom: 2px;
+      }
+
+      &::after {
+        content: "";
+        display: block;
+        border-top: 4px solid #888;
+        border-left: 4px solid transparent;
+        border-right: 4px solid transparent;
       }
     }
   }

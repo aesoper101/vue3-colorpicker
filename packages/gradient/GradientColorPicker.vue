@@ -423,12 +423,10 @@
 
           .vc-gradient__stop__container {
             position: absolute;
-            //width: calc(100% - 14px);
             width: 100%;
             top: 0;
             height: 100%;
             left: 0;
-            //left: 7px;
 
             .vc-gradient__stop {
               position: absolute;
@@ -462,7 +460,6 @@
         position: relative;
         z-index: 2;
         font-size: 12px;
-        background-color: #f6f7f9;
         border-radius: 4px;
 
         &:hover {
@@ -478,15 +475,16 @@
           justify-content: center;
           align-items: center;
           border-radius: 4px;
-          background-color: inherit;
+          background-color: rgba(200, 200, 200, 0.25);
+          color: #666;
 
           input {
             max-width: 28px;
             text-align: center;
             border: none;
             outline: none;
-            background-color: initial;
-            color: #33383e;
+            background-color: transparent;
+            color: #666;
             font-size: inherit;
             overflow: visible;
           }
@@ -494,13 +492,12 @@
 
         &__panel {
           display: none;
-          padding-top: 4px;
           z-index: 10;
 
           .vc-degree-input__disk {
             width: 64px;
             height: 64px;
-            background-color: #fff;
+            background-color: #f1f1f1;
             box-shadow: 0 0 2px rgba(0, 0, 0, 0.16), 0 1px 8px rgba(0, 0, 0, 0.06),
               0 4px 12px rgba(0, 0, 0, 0.08);
             border-radius: 4px;
