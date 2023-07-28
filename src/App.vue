@@ -58,7 +58,8 @@
 
   const color = ref("blue");
   const gradientColor = ref(
-    "linear-gradient(90deg, rgba(255, 255, 255, 1) 0%, rgba(0, 0, 0, 1) 100%)"
+    // "linear-gradient(90deg, rgba(255, 255, 255, 1) 0%, rgba(0, 0, 0, 1) 100%)"
+    "radial-gradient(circle, rgba(255, 167, 39, 1) 0%, rgba(0, 0, 0, 1) 100%)"
   );
 
   const bg = computed(() => {

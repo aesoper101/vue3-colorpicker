@@ -47,7 +47,7 @@
   } from "vue";
   import { onClickOutside, tryOnMounted, whenever, useDebounceFn } from "@vueuse/core";
   import tinycolor, { ColorInputWithoutInstance } from "tinycolor2";
-  import { GradientNode, parse, stringify } from "gradient-parser";
+  import { ColorStop, GradientNode, parse, stringify } from "gradient-parser";
   import { createPopper, Instance } from "@popperjs/core";
   import propTypes from "vue-types";
 
@@ -56,8 +56,9 @@
   import GradientColorPicker from "./gradient/GradientColorPicker.vue";
   import WrapContainer from "./common/WrapContainer.vue";
 
-  import { ColorPickerProvider, ColorPickerProviderKey, SupportLang } from "./utils/type";
+  import { ColorPickerProvider, ColorPickerProviderKey } from "./utils/type";
   import { Color, ColorFormat } from "./utils/color";
+  import { Local, type Lang } from "./lang";
 
   const colorPickerProps = {
     isWidget: propTypes.bool.def(false),
@@ -80,7 +81,7 @@
     useType: propTypes.oneOf(["pure", "gradient", "both"]).def("pure"),
     activeKey: propTypes.oneOf(["pure", "gradient"]).def("pure"),
     lang: {
-      type: String as PropType<SupportLang>,
+      type: String as PropType<Lang>,
       default: "ZH-cn",
     },
     zIndex: propTypes.number.def(9999),
@@ -111,7 +112,7 @@
     ],
     setup(props, { emit }) {
       provide<ColorPickerProvider>(ColorPickerProviderKey, {
-        lang: computed(() => props.lang || "ZH-cn"),
+        lang: computed(() => Local[props.lang || "ZH-cn"]),
       });
 
       const state = reactive({
@@ -130,6 +131,7 @@
         startColorStop: 0,
         endColorStop: 100,
         angle: 0,
+        type: "linear",
         gradientColor: props.gradientColor,
       });
 
@@ -176,6 +178,7 @@
             startColor: gradientState.startColor,
             endColor: gradientState.endColor,
             angle: gradientState.angle,
+            type: gradientState.type,
             startColorStop: gradientState.startColorStop,
             endColorStop: gradientState.endColorStop,
             onStartColorChange: (v: Color) => {
@@ -196,6 +199,10 @@
             },
             onAngleChange: (v: number) => {
               gradientState.angle = v;
+              onGradientChange();
+            },
+            onTypeChange: (type: string) => {
+              gradientState.type = type;
               onGradientChange();
             },
             onAdvanceChange: onAdvanceChange,
@@ -229,10 +236,10 @@
       const parseGradientColor = () => {
         try {
           const [colorNode] = parse(gradientState.gradientColor);
+          console.log(colorNode);
           if (
             colorNode &&
-            colorNode.type === "linear-gradient" &&
-            colorNode.orientation?.type === "angular" &&
+            colorNode.type.includes("gradient") &&
             colorNode.colorStops.length >= 2
           ) {
             const startColorVal = colorNode.colorStops[0];
@@ -240,7 +247,14 @@
 
             gradientState.startColorStop = Number(startColorVal.length?.value) || 0;
             gradientState.endColorStop = Number(endColorVal.length?.value) || 0;
-            gradientState.angle = Number(colorNode.orientation?.value) || 0;
+
+            if (colorNode.type === "linear-gradient" && colorNode.orientation?.type === "angular") {
+              gradientState.angle = Number(colorNode.orientation?.value) || 0;
+            }
+
+            gradientState.type = colorNode.type.split("-")[0];
+
+            console.log(gradientState);
 
             const [r, g, b, a] = startColorVal.value;
             const [r1, g1, b1, a1] = endColorVal.value;
@@ -280,22 +294,32 @@
         const startColorArr = gradientState.startColor.RGB.map((v) => v.toString());
         const endColorArr = gradientState.endColor.RGB.map((v) => v.toString());
 
-        nodes.push({
-          type: "linear-gradient",
-          orientation: { type: "angular", value: gradientState.angle + "" },
-          colorStops: [
-            {
-              type: "rgba",
-              value: [startColorArr[0], startColorArr[1], startColorArr[2], startColorArr[3]],
-              length: { value: gradientState.startColorStop + "", type: "%" },
-            },
-            {
-              type: "rgba",
-              value: [endColorArr[0], endColorArr[1], endColorArr[2], endColorArr[3]],
-              length: { value: gradientState.endColorStop + "", type: "%" },
-            },
-          ],
-        });
+        const colorStops: ColorStop[] = [
+          {
+            type: "rgba",
+            value: [startColorArr[0], startColorArr[1], startColorArr[2], startColorArr[3]],
+            length: { value: gradientState.startColorStop + "", type: "%" },
+          },
+          {
+            type: "rgba",
+            value: [endColorArr[0], endColorArr[1], endColorArr[2], endColorArr[3]],
+            length: { value: gradientState.endColorStop + "", type: "%" },
+          },
+        ];
+
+        if (gradientState.type === "linear") {
+          nodes.push({
+            type: "linear-gradient",
+            orientation: { type: "angular", value: gradientState.angle + "" },
+            colorStops: colorStops,
+          });
+        } else if (gradientState.type === "radial") {
+          nodes.push({
+            type: "radial-gradient",
+            orientation: [{ type: "shape", value: "circle" }],
+            colorStops: colorStops,
+          });
+        }
 
         return nodes;
       };

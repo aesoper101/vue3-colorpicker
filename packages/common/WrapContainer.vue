@@ -13,7 +13,7 @@
             @click="onActiveKeyChange('pure')"
           >
             <button>
-              <div class="vc-btn__content">{{ lang === "ZH-cn" ? "纯色" : "Pure" }}</div>
+              <div class="vc-btn__content">{{ lang?.pure }}</div>
             </button>
           </div>
           <div
@@ -26,7 +26,7 @@
             @click="onActiveKeyChange('gradient')"
           >
             <button>
-              <div class="vc-btn__content">{{ lang === "ZH-cn" ? "渐变色" : "Gradient" }}</div>
+              <div class="vc-btn__content">{{ lang?.gradient }}</div>
             </button>
           </div>
           <div

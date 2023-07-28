@@ -1,9 +1,21 @@
 <template>
   <div class="vc-gradient-picker">
-    <div class="vc-gradient-picker__header" v-show="advancePanelShow">
-      <span style="cursor: pointer" @click="onBack">
-        <div class="back"></div>
-      </span>
+    <div class="vc-gradient-picker__header">
+      <div>
+        <div v-show="advancePanelShow" class="back" style="cursor: pointer" @click="onBack"></div>
+      </div>
+
+      <div class="vc-gradient__types">
+        <div
+          class="vc-gradient__type"
+          :class="{ active: state.type === type }"
+          v-for="type in ['linear', 'radial']"
+          :key="type"
+          @click="onTypeChange"
+        >
+          {{ type }}
+        </div>
+      </div>
     </div>
     <div class="vc-gradient-picker__body">
       <div class="vc-color-range" ref="colorRangeRef">
@@ -16,7 +28,7 @@
                 'vc-gradient__stop--current': state.startActive,
               }"
               ref="startGradientRef"
-              :title="lang === 'ZH-cn' ? '开始' : 'Start'"
+              :title="lang?.start"
               :style="{ left: getStartColorLeft + 'px' }"
             >
               <span class="vc-gradient__stop--inner"></span>
@@ -27,7 +39,7 @@
                 'vc-gradient__stop--current': !state.startActive,
               }"
               ref="stopGradientRef"
-              :title="lang === 'ZH-cn' ? '结束' : 'End'"
+              :title="lang?.end"
               :style="{ left: getEndColorLeft + 'px' }"
             >
               <span class="vc-gradient__stop--inner"></span>
@@ -46,16 +58,16 @@
         </div>
       </div>
     </div>
-    <Palette v-if="!advancePanelShow" @change="onCompactChange" />
-    <Board :color="currentColor" v-if="advancePanelShow" @change="onBoardChange" />
+    <Board v-if="advancePanelShow" :color="currentColor" @change="onBoardChange" />
     <Hue v-if="advancePanelShow" :color="currentColor" @change="onHueChange" />
+    <Palette v-if="!advancePanelShow" @change="onCompactChange" />
     <Lightness v-if="!advancePanelShow" :color="currentColor" @change="onLightChange" />
-    <Alpha :color="currentColor" @change="onAlphaChange" v-if="!disableAlpha" />
+    <Alpha v-if="!disableAlpha" :color="currentColor" @change="onAlphaChange" />
     <Display :color="currentColor" :disable-alpha="disableAlpha" @change="onDisplayChange" />
     <History
+      v-if="!disableHistory"
       :round="roundHistory"
       :colors="historyColors"
-      v-if="!disableHistory"
       @change="onCompactChange"
     />
   </div>
@@ -88,6 +100,7 @@
       startColorStop: propTypes.number.def(0),
       endColorStop: propTypes.number.def(100),
       angle: propTypes.number.def(0),
+      type: propTypes.oneOf(["linear", "radial"]).def("linear"),
       disableHistory: propTypes.bool.def(false),
       roundHistory: propTypes.bool.def(false),
       disableAlpha: propTypes.bool.def(false),
@@ -104,6 +117,7 @@
       "angleChange",
       "startColorStopChange",
       "endColorStopChange",
+      "typeChange",
     ],
     setup(props, { emit }) {
       const state = reactive({
@@ -113,6 +127,7 @@
         startColorStop: props.startColorStop,
         endColorStop: props.endColorStop,
         angle: props.angle,
+        type: props.type,
 
         // rgba
         startColorRgba: props.startColor.toRgbString(),
@@ -134,6 +149,13 @@
           state.startColor = val[0];
           state.endColor = val[1];
           state.angle = val[2];
+        }
+      );
+
+      watch(
+        () => props.type,
+        (val: any) => {
+          state.type = val;
         }
       );
 
@@ -175,9 +197,11 @@
       });
 
       const gradientBg = computed(() => {
-        return {
-          background: `linear-gradient(${state.angle}deg, ${state.startColorRgba} ${state.startColorStop}%, ${state.endColorRgba} ${state.endColorStop}%)`,
-        };
+        let background = `background: linear-gradient(${state.angle}deg, ${state.startColorRgba} ${state.startColorStop}%, ${state.endColorRgba} ${state.endColorStop}%)`;
+        if (state.type === "radial") {
+          background = `background: radial-gradient(circle, ${state.startColorRgba} ${state.startColorStop}%, ${state.endColorRgba} ${state.endColorStop}%)`;
+        }
+        return background;
       });
 
       const dragStartRange = (evt: MouseEvent) => {
@@ -288,6 +312,11 @@
         emit("advanceChange", false);
       };
 
+      const onTypeChange = () => {
+        state.type = state.type === "linear" ? "radial" : "linear";
+        emit("typeChange", state.type);
+      };
+
       const historyColors = useLocalStorage<string[]>(HistoryColorKey, [], {});
 
       const updateColorHistoryFn = useDebounceFn(() => {
@@ -376,6 +405,7 @@
         onBack,
         onDegreeChange,
         onDisplayChange,
+        onTypeChange,
         lang: parent?.lang,
       };
     },
@@ -390,6 +420,9 @@
       margin-bottom: 20px;
       z-index: 999;
       text-align: left;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
 
       .back {
         border: solid black;
@@ -398,6 +431,24 @@
         padding: 4px;
         margin-left: 2px;
         transform: rotate(135deg);
+      }
+    }
+
+    .vc-gradient__types {
+      display: flex;
+      background-color: rgba(200, 200, 200, 0.25);
+      border-radius: 4px;
+      overflow: hidden;
+
+      .vc-gradient__type {
+        padding: 4px 8px;
+        color: #666;
+        cursor: pointer;
+
+        &.active {
+          color: #000;
+          background-color: rgba(200, 200, 200, 0.8);
+        }
       }
     }
 
