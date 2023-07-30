@@ -2,18 +2,23 @@
   <div class="vc-gradient-picker">
     <div class="vc-gradient-picker__header">
       <div>
-        <div v-show="advancePanelShow" class="back" style="cursor: pointer" @click="onBack"></div>
+        <div
+          v-show="pickerType === 'fk' && advancePanelShow"
+          class="back"
+          style="cursor: pointer"
+          @click="onBack"
+        ></div>
       </div>
 
       <div class="vc-gradient__types">
         <div
           class="vc-gradient__type"
-          :class="{ active: state.type === type }"
-          v-for="type in ['linear', 'radial']"
-          :key="type"
+          :class="{ active: state.type === typeItem }"
+          v-for="typeItem in ['linear', 'radial']"
+          :key="typeItem"
           @click="onTypeChange"
         >
-          {{ type }}
+          {{ lang ? lang[typeItem] : typeItem }}
         </div>
       </div>
     </div>
@@ -104,6 +109,7 @@
       disableHistory: propTypes.bool.def(false),
       roundHistory: propTypes.bool.def(false),
       disableAlpha: propTypes.bool.def(false),
+      pickerType: propTypes.oneOf(["fk", "chrome"]).def("fk"),
     },
     emits: [
       "update:startColor",
@@ -136,7 +142,7 @@
 
       const parent = inject<ColorPickerProvider>(ColorPickerProviderKey);
 
-      const advancePanelShow = ref(false);
+      const advancePanelShow = ref(props.pickerType === "chrome");
 
       // Ref
       const startGradientRef = ref<HTMLElement>();
@@ -425,7 +431,7 @@
       align-items: center;
 
       .back {
-        border: solid black;
+        border: 2px solid rgba(150, 150, 150, 0.65);
         border-width: 0 1px 1px 0;
         display: inline-block;
         padding: 4px;

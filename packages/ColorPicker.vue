@@ -170,6 +170,7 @@
           disableAlpha: props.disableAlpha,
           disableHistory: props.disableHistory,
           roundHistory: props.roundHistory,
+          pickerType: props.pickerType,
         };
 
         if (state.activeKey === "gradient") {

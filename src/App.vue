@@ -41,7 +41,6 @@
       <div>
         <ColorPicker
           theme="black"
-          pickerType="chrome"
           useType="gradient"
           v-model:gradientColor="gradientColor"
           :disableHistory="true"
