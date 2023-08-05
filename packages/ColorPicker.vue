@@ -237,7 +237,7 @@
       const parseGradientColor = () => {
         try {
           const [colorNode] = parse(gradientState.gradientColor);
-          console.log(colorNode);
+
           if (
             colorNode &&
             colorNode.type.includes("gradient") &&
@@ -254,8 +254,6 @@
             }
 
             gradientState.type = colorNode.type.split("-")[0];
-
-            console.log(gradientState);
 
             const [r, g, b, a] = startColorVal.value;
             const [r1, g1, b1, a1] = endColorVal.value;

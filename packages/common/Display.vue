@@ -104,6 +104,18 @@
             state.color.hex = _hex;
           }
         } else if (key !== undefined && state.rgba && state.color) {
+          if (event.target.value < 0) {
+            event.target.value = 0;
+          }
+
+          if (key === 3 && event.target.value > 1) {
+            event.target.value = 1;
+          }
+
+          if (key < 3 && event.target.value > 255) {
+            event.target.value = 255;
+          }
+
           state.rgba[key] = Number(event.target.value);
           const [r, g, b, a] = state.rgba;
           state.color.hex = tinycolor({ r, g, b }).toHex();
@@ -186,7 +198,6 @@
         border: 0;
         outline: none;
         cursor: pointer;
-        color: #33383e;
         font-size: 14px;
         text-align: center;
         box-sizing: border-box;
@@ -209,7 +220,6 @@
         border: 0;
         outline: none;
         cursor: pointer;
-        color: #33383e;
         font-size: 14px;
         text-align: center;
         background-color: $backGroundColor;

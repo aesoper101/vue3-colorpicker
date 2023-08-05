@@ -165,7 +165,7 @@
         }
       );
 
-      const currentColor = computed({
+      const currentColor: any = computed({
         get: () => {
           return state.startActive ? state.startColor : state.endColor;
         },
@@ -450,6 +450,7 @@
         padding: 4px 8px;
         color: #666;
         cursor: pointer;
+        font-size: 12px;
 
         &.active {
           color: #000;
