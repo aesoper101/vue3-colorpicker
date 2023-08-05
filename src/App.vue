@@ -17,11 +17,11 @@
     <div class="color-pickers">
       <div>
         <ColorPicker v-model:pureColor="color" is-widget />
-        <div>pickerType: fk</div>
+        <h3>pickerType: fk</h3>
       </div>
       <div>
         <ColorPicker v-model:pureColor="color" is-widget pickerType="chrome" :debounce="10" />
-        <div>pickerType: chrome</div>
+        <h3>pickerType: chrome</h3>
       </div>
 
       <div>
@@ -35,18 +35,18 @@
           @gradientColorChange="onChange"
           @pureColorChange="onChange"
         />
-        <div> <div>useType: both</div></div>
+        <h3>useType: both</h3>
       </div>
 
       <div>
         <ColorPicker
-          pickerType="chrome"
+          theme="black"
           useType="gradient"
           v-model:gradientColor="gradientColor"
           :disableHistory="true"
           is-widget
         />
-        <div> <div>useType: gradient</div></div>
+        <h3>useType: gradient</h3>
       </div>
     </div>
   </div>
@@ -57,7 +57,8 @@
 
   const color = ref("blue");
   const gradientColor = ref(
-    "linear-gradient(90deg, rgba(255, 255, 255, 1) 0%, rgba(0, 0, 0, 1) 100%)"
+    // "linear-gradient(90deg, rgba(255, 255, 255, 1) 0%, rgba(0, 0, 0, 1) 100%)"
+    "radial-gradient(circle, rgba(255, 167, 39, 1) 0%, rgba(0, 0, 0, 1) 100%)"
   );
 
   const bg = computed(() => {

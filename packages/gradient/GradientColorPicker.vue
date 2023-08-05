@@ -1,9 +1,26 @@
 <template>
   <div class="vc-gradient-picker">
-    <div class="vc-gradient-picker__header" v-show="advancePanelShow">
-      <span style="cursor: pointer" @click="onBack">
-        <div class="back"></div>
-      </span>
+    <div class="vc-gradient-picker__header">
+      <div>
+        <div
+          v-show="pickerType === 'fk' && advancePanelShow"
+          class="back"
+          style="cursor: pointer"
+          @click="onBack"
+        ></div>
+      </div>
+
+      <div class="vc-gradient__types">
+        <div
+          class="vc-gradient__type"
+          :class="{ active: state.type === typeItem }"
+          v-for="typeItem in ['linear', 'radial']"
+          :key="typeItem"
+          @click="onTypeChange"
+        >
+          {{ lang ? lang[typeItem] : typeItem }}
+        </div>
+      </div>
     </div>
     <div class="vc-gradient-picker__body">
       <div class="vc-color-range" ref="colorRangeRef">
@@ -16,7 +33,7 @@
                 'vc-gradient__stop--current': state.startActive,
               }"
               ref="startGradientRef"
-              :title="lang === 'ZH-cn' ? '开始' : 'Start'"
+              :title="lang?.start"
               :style="{ left: getStartColorLeft + 'px' }"
             >
               <span class="vc-gradient__stop--inner"></span>
@@ -27,7 +44,7 @@
                 'vc-gradient__stop--current': !state.startActive,
               }"
               ref="stopGradientRef"
-              :title="lang === 'ZH-cn' ? '结束' : 'End'"
+              :title="lang?.end"
               :style="{ left: getEndColorLeft + 'px' }"
             >
               <span class="vc-gradient__stop--inner"></span>
@@ -46,16 +63,16 @@
         </div>
       </div>
     </div>
-    <Palette v-if="!advancePanelShow" @change="onCompactChange" />
-    <Board :color="currentColor" v-if="advancePanelShow" @change="onBoardChange" />
+    <Board v-if="advancePanelShow" :color="currentColor" @change="onBoardChange" />
     <Hue v-if="advancePanelShow" :color="currentColor" @change="onHueChange" />
+    <Palette v-if="!advancePanelShow" @change="onCompactChange" />
     <Lightness v-if="!advancePanelShow" :color="currentColor" @change="onLightChange" />
-    <Alpha :color="currentColor" @change="onAlphaChange" v-if="!disableAlpha" />
+    <Alpha v-if="!disableAlpha" :color="currentColor" @change="onAlphaChange" />
     <Display :color="currentColor" :disable-alpha="disableAlpha" @change="onDisplayChange" />
     <History
+      v-if="!disableHistory"
       :round="roundHistory"
       :colors="historyColors"
-      v-if="!disableHistory"
       @change="onCompactChange"
     />
   </div>
@@ -88,9 +105,11 @@
       startColorStop: propTypes.number.def(0),
       endColorStop: propTypes.number.def(100),
       angle: propTypes.number.def(0),
+      type: propTypes.oneOf(["linear", "radial"]).def("linear"),
       disableHistory: propTypes.bool.def(false),
       roundHistory: propTypes.bool.def(false),
       disableAlpha: propTypes.bool.def(false),
+      pickerType: propTypes.oneOf(["fk", "chrome"]).def("fk"),
     },
     emits: [
       "update:startColor",
@@ -104,6 +123,7 @@
       "angleChange",
       "startColorStopChange",
       "endColorStopChange",
+      "typeChange",
     ],
     setup(props, { emit }) {
       const state = reactive({
@@ -113,6 +133,7 @@
         startColorStop: props.startColorStop,
         endColorStop: props.endColorStop,
         angle: props.angle,
+        type: props.type,
 
         // rgba
         startColorRgba: props.startColor.toRgbString(),
@@ -121,7 +142,7 @@
 
       const parent = inject<ColorPickerProvider>(ColorPickerProviderKey);
 
-      const advancePanelShow = ref(false);
+      const advancePanelShow = ref(props.pickerType === "chrome");
 
       // Ref
       const startGradientRef = ref<HTMLElement>();
@@ -137,7 +158,14 @@
         }
       );
 
-      const currentColor = computed({
+      watch(
+        () => props.type,
+        (val: any) => {
+          state.type = val;
+        }
+      );
+
+      const currentColor: any = computed({
         get: () => {
           return state.startActive ? state.startColor : state.endColor;
         },
@@ -175,9 +203,11 @@
       });
 
       const gradientBg = computed(() => {
-        return {
-          background: `linear-gradient(${state.angle}deg, ${state.startColorRgba} ${state.startColorStop}%, ${state.endColorRgba} ${state.endColorStop}%)`,
-        };
+        let background = `background: linear-gradient(${state.angle}deg, ${state.startColorRgba} ${state.startColorStop}%, ${state.endColorRgba} ${state.endColorStop}%)`;
+        if (state.type === "radial") {
+          background = `background: radial-gradient(circle, ${state.startColorRgba} ${state.startColorStop}%, ${state.endColorRgba} ${state.endColorStop}%)`;
+        }
+        return background;
       });
 
       const dragStartRange = (evt: MouseEvent) => {
@@ -288,6 +318,11 @@
         emit("advanceChange", false);
       };
 
+      const onTypeChange = () => {
+        state.type = state.type === "linear" ? "radial" : "linear";
+        emit("typeChange", state.type);
+      };
+
       const historyColors = useLocalStorage<string[]>(HistoryColorKey, [], {});
 
       const updateColorHistoryFn = useDebounceFn(() => {
@@ -376,6 +411,7 @@
         onBack,
         onDegreeChange,
         onDisplayChange,
+        onTypeChange,
         lang: parent?.lang,
       };
     },
@@ -390,14 +426,36 @@
       margin-bottom: 20px;
       z-index: 999;
       text-align: left;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
 
       .back {
-        border: solid black;
+        border: 2px solid rgba(150, 150, 150, 0.65);
         border-width: 0 1px 1px 0;
         display: inline-block;
         padding: 4px;
         margin-left: 2px;
         transform: rotate(135deg);
+      }
+    }
+
+    .vc-gradient__types {
+      display: flex;
+      background-color: rgba(200, 200, 200, 0.25);
+      border-radius: 4px;
+      overflow: hidden;
+
+      .vc-gradient__type {
+        padding: 4px 8px;
+        color: #666;
+        cursor: pointer;
+        font-size: 12px;
+
+        &.active {
+          color: #000;
+          background-color: rgba(200, 200, 200, 0.8);
+        }
       }
     }
 
@@ -423,12 +481,10 @@
 
           .vc-gradient__stop__container {
             position: absolute;
-            //width: calc(100% - 14px);
             width: 100%;
             top: 0;
             height: 100%;
             left: 0;
-            //left: 7px;
 
             .vc-gradient__stop {
               position: absolute;
@@ -462,7 +518,6 @@
         position: relative;
         z-index: 2;
         font-size: 12px;
-        background-color: #f6f7f9;
         border-radius: 4px;
 
         &:hover {
@@ -478,15 +533,16 @@
           justify-content: center;
           align-items: center;
           border-radius: 4px;
-          background-color: inherit;
+          background-color: rgba(200, 200, 200, 0.25);
+          color: #666;
 
           input {
             max-width: 28px;
             text-align: center;
             border: none;
             outline: none;
-            background-color: initial;
-            color: #33383e;
+            background-color: transparent;
+            color: #666;
             font-size: inherit;
             overflow: visible;
           }
@@ -494,13 +550,12 @@
 
         &__panel {
           display: none;
-          padding-top: 4px;
           z-index: 10;
 
           .vc-degree-input__disk {
             width: 64px;
             height: 64px;
-            background-color: #fff;
+            background-color: #f1f1f1;
             box-shadow: 0 0 2px rgba(0, 0, 0, 0.16), 0 1px 8px rgba(0, 0, 0, 0.06),
               0 4px 12px rgba(0, 0, 0, 0.08);
             border-radius: 4px;

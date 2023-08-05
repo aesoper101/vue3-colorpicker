@@ -168,7 +168,7 @@
     box-sizing: border-box;
     border-radius: 3px;
     user-select: none;
-    background-color: white;
+    background-color: initial;
 
     &__inner {
       position: relative;
@@ -180,7 +180,7 @@
       text-align: left;
 
       .back {
-        border: solid black;
+        border: 2px solid rgba(150, 150, 150, 0.6);
         border-width: 0 1px 1px 0;
         display: inline-block;
         padding: 4px;

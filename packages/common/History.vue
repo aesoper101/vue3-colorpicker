@@ -48,21 +48,23 @@
     }
 
     .color-list {
-      width: auto;
+      width: 100%;
       display: flex;
       position: relative;
       margin: 0;
+      gap: 2px;
 
       .color-item {
         position: relative;
-        width: 26px;
+        flex: 1;
+        max-width: 26px;
         height: 26px;
+        border-radius: 2px;
         cursor: pointer;
         overflow: hidden;
         display: inline-block;
         vertical-align: middle;
-        margin-right: 1px;
-        box-shadow: 3px 0 5px rgba(0, 0, 0, 0.08);
+        box-shadow: 3px 0 5px rgba(0, 0, 0, 0.1);
 
         &__round {
           border-radius: 50%;
