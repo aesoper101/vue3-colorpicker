@@ -142,6 +142,17 @@ export default {
       },
       description: "the mount node for Picker",
     },
+    theme: {
+      type: "string",
+      description: "white | black",
+      control: { type: "select" },
+      options: ["white", "black"],
+      table: {
+        defaultValue: {
+          summary: "white",
+        },
+      },
+    },
   } as Partial<ArgTypes<ColorPickerProps>>,
 } as Meta;
 
