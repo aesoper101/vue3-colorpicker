@@ -28,7 +28,7 @@ npm install vue3-colorpicker
 
 ```
 import Vue3ColorPicker from "vue3-colorpicker";
-import "vue3-colorpicker/style.css";
+import "vue3-colorpicker/dist/style.css";
 
 createApp(App)
   .use(router)
@@ -40,7 +40,7 @@ OR
 
 ```vue3
 import { ColorPicker } from "vue3-colorpicker";
-import "vue3-colorpicker/style.css";
+import "vue3-colorpicker/dist/style.css";
 
 export default defineComponent({
 components: { ColorPicker },
