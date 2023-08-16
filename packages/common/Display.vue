@@ -213,6 +213,7 @@
       flex: 1;
       font-size: 12px;
       color: $color;
+      text-align: center;
 
       input {
         padding: 4px 0;
