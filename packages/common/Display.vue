@@ -15,16 +15,13 @@
     </template>
     <template v-else-if="state.rgba">
       <div style="display: flex; flex: 1; gap: 4px; height: 100%">
-        <div class="vc-rgb-input" v-for="(v, i) in state.rgba" :key="i">
-          <div>
-            <input :value="v" @input="(e) => onInputChange(e, i)" />
-          </div>
-          <div>{{ ["R", "G", "B", "A"][i] }}</div>
+        <div class="vc-color-input" v-for="(v, i) in state.rgba" :key="i">
+          <input :value="v" @input="(e) => onInputChange(e, i)" />
         </div>
       </div>
     </template>
 
-    <div class="vc-input-toggle" @click="onInputTypeChange"></div>
+    <div class="vc-input-toggle" @click="onInputTypeChange">{{ inputType }}</div>
   </div>
 </template>
 
@@ -47,7 +44,7 @@
       const state = reactive({
         color: props.color,
         hex: props.color?.hex,
-        alpha: props.color?.alpha + "%",
+        alpha: Math.floor(props.color?.alpha || 100) + "%",
         rgba: props.color?.RGB,
         previewBgColor: props.color?.toRgbString(),
       });
@@ -93,7 +90,6 @@
       }, 300);
 
       const onInputChange = useDebounceFn((event, key?: number) => {
-        console.log(event.target.value);
         if (!event.target.value) {
           return;
         }
@@ -267,16 +263,21 @@
     }
 
     .vc-input-toggle {
-      height: 10px;
-      width: 8px;
-      padding: 4px;
       cursor: pointer;
+      font-size: 12px;
+      line-height: 12px;
+      width: 24px;
+      border-radius: 4px;
+      padding: 2px;
 
       &:hover {
         background-color: #efefef;
       }
 
       &::before {
+        height: 0;
+        width: 0;
+        margin: auto;
         content: "";
         display: block;
         border-bottom: 4px solid #888;
@@ -286,11 +287,15 @@
       }
 
       &::after {
+        height: 0;
+        width: 0;
+        margin: auto;
         content: "";
         display: block;
         border-top: 4px solid #888;
         border-left: 4px solid transparent;
         border-right: 4px solid transparent;
+        margin-top: 2px;
       }
     }
   }

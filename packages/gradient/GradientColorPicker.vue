@@ -11,14 +11,28 @@
       </div>
 
       <div class="vc-gradient__types">
-        <div
-          class="vc-gradient__type"
-          :class="{ active: state.type === typeItem }"
-          v-for="typeItem in ['linear', 'radial']"
-          :key="typeItem"
-          @click="onTypeChange"
-        >
-          {{ lang ? lang[typeItem] : typeItem }}
+        <div class="vc-gradient-wrap__types">
+          <div
+            class="vc-gradient__type"
+            :class="{ active: state.type === typeItem }"
+            v-for="typeItem in ['linear', 'radial']"
+            :key="typeItem"
+            @click="onTypeChange"
+          >
+            {{ lang ? lang[typeItem] : typeItem }}
+          </div>
+        </div>
+
+        <div class="vc-picker-degree-input vc-degree-input" v-show="state.type === 'linear'">
+          <div class="vc-degree-input__control">
+            <input :value="state.angle" @blur="onDegreeBlur" />deg
+          </div>
+
+          <div class="vc-degree-input__panel">
+            <div class="vc-degree-input__disk">
+              <Angle v-model:angle="state.angle" :size="40" @change="onDegreeChange" />
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -34,7 +48,7 @@
               }"
               ref="startGradientRef"
               :title="lang?.start"
-              :style="{ left: getStartColorLeft + 'px' }"
+              :style="{ left: getStartColorLeft + 'px', backgroundColor: state.startColorRgba }"
             >
               <span class="vc-gradient__stop--inner"></span>
             </div>
@@ -45,20 +59,10 @@
               }"
               ref="stopGradientRef"
               :title="lang?.end"
-              :style="{ left: getEndColorLeft + 'px' }"
+              :style="{ left: getEndColorLeft + 'px', backgroundColor: state.endColorRgba }"
             >
               <span class="vc-gradient__stop--inner"></span>
             </div>
-          </div>
-        </div>
-      </div>
-      <div class="vc-picker-degree-input vc-degree-input">
-        <div class="vc-degree-input__control">
-          <input :value="state.angle" @blur="onDegreeBlur" />deg
-        </div>
-        <div class="vc-degree-input__panel">
-          <div class="vc-degree-input__disk">
-            <Angle v-model:angle="state.angle" :size="40" @change="onDegreeChange" />
           </div>
         </div>
       </div>
@@ -423,7 +427,7 @@
     position: relative;
 
     &__header {
-      margin-bottom: 20px;
+      margin-bottom: 12px;
       z-index: 999;
       text-align: left;
       display: flex;
@@ -437,14 +441,22 @@
         padding: 4px;
         margin-left: 2px;
         transform: rotate(135deg);
+        margin-right: 8px;
       }
     }
 
     .vc-gradient__types {
       display: flex;
-      background-color: rgba(200, 200, 200, 0.25);
-      border-radius: 4px;
-      overflow: hidden;
+      width: 100%;
+      justify-content: space-between;
+
+      .vc-gradient-wrap__types {
+        display: flex;
+        background-color: rgba(200, 200, 200, 0.25);
+        border-radius: 4px;
+        overflow: hidden;
+        align-items: center;
+      }
 
       .vc-gradient__type {
         padding: 4px 8px;
@@ -495,7 +507,7 @@
               border: 2px solid #fff;
               border-radius: 2px;
               cursor: pointer;
-              box-shadow: 0 0 2px rgba(0, 0, 0, 0.35);
+              box-shadow: 0 0 2px 1px rgba(0, 0, 0, 0.35);
               box-sizing: content-box;
               transform: translate(-9px, 0);
 
@@ -507,72 +519,74 @@
               &--current {
                 position: relative;
                 z-index: 1;
-                box-shadow: 0 0 4px 0 rgba(0, 0, 0, 0.2), 0 0 0 1.2px #2254f4;
+                box-shadow: 0 0 2px 2px rgb(34, 83, 244), 0 0 1px 1px rgb(34, 83, 244, 0.5);
               }
             }
           }
         }
       }
+    }
 
-      .vc-degree-input {
-        position: relative;
-        z-index: 2;
-        font-size: 12px;
-        border-radius: 4px;
+    .vc-degree-input {
+      position: relative;
+      z-index: 2;
+      font-size: 12px;
+      border-radius: 4px;
+      display: flex;
 
-        &:hover {
-          .vc-degree-input__panel {
-            display: block;
-          }
+      &:hover {
+        .vc-degree-input__panel {
+          display: block;
         }
+      }
 
-        &__control {
-          width: 100%;
-          height: 100%;
+      &__control {
+        width: 100%;
+        height: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        border-radius: 4px;
+        background-color: rgba(200, 200, 200, 0.25);
+        color: #666;
+        padding: 0 6px 0 0;
+
+        input {
+          max-width: 28px;
+          text-align: center;
+          border: none;
+          outline: none;
+          background-color: transparent;
+          color: #666;
+          font-size: inherit;
+          overflow: visible;
+        }
+      }
+
+      &__panel {
+        display: none;
+        z-index: 10;
+        position: absolute;
+        top: 20px;
+        left: 0;
+
+        .vc-degree-input__disk {
+          padding: 4px;
+          background-color: #f1f1f1;
+          box-shadow: 0 0 2px rgba(0, 0, 0, 0.16), 0 1px 8px rgba(0, 0, 0, 0.06),
+            0 4px 12px rgba(0, 0, 0, 0.08);
+          border-radius: 4px;
           display: flex;
           justify-content: center;
           align-items: center;
-          border-radius: 4px;
-          background-color: rgba(200, 200, 200, 0.25);
-          color: #666;
-
-          input {
-            max-width: 28px;
-            text-align: center;
-            border: none;
-            outline: none;
-            background-color: transparent;
-            color: #666;
-            font-size: inherit;
-            overflow: visible;
-          }
-        }
-
-        &__panel {
-          display: none;
-          z-index: 10;
-
-          .vc-degree-input__disk {
-            width: 64px;
-            height: 64px;
-            background-color: #f1f1f1;
-            box-shadow: 0 0 2px rgba(0, 0, 0, 0.16), 0 1px 8px rgba(0, 0, 0, 0.06),
-              0 4px 12px rgba(0, 0, 0, 0.08);
-            border-radius: 4px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            position: relative;
-            transform: translate(0, 0);
-          }
+          position: relative;
+          transform: translate(0, 0);
         }
       }
+    }
 
-      .vc-picker-degree-input {
-        margin-left: 8px;
-        width: 64px;
-        height: 28px;
-      }
+    .vc-picker-degree-input {
+      margin-left: 8px;
     }
   }
 </style>

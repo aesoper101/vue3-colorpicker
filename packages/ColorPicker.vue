@@ -86,7 +86,7 @@
     },
     zIndex: propTypes.number.def(9999),
     pickerContainer: {
-      type: String || HTMLElement,
+      type: [String, HTMLElement],
       default: "body",
     },
     debounce: propTypes.number.def(100),
