@@ -5,7 +5,7 @@
 
   <div class="main">
     <div class="color-pickers">
-      <ColorPicker v-model:pureColor="color" picker-container="#app" />
+      <ColorPicker v-model:pureColor="color" :picker-container="container" />
       <ColorPicker v-model:pureColor="color" shape="circle" pickerType="chrome" />
       <ColorPicker v-model:gradientColor="gradientColor" useType="gradient" />
 
@@ -55,7 +55,8 @@
 <script setup lang="ts">
   import { computed, ref } from "vue";
 
-  const color = ref("blue");
+  const color = ref("#aa47bc");
+  const container = document.querySelector("#app");
   const gradientColor = ref(
     // "linear-gradient(90deg, rgba(255, 255, 255, 1) 0%, rgba(0, 0, 0, 1) 100%)"
     "radial-gradient(circle, rgba(255, 167, 39, 1) 0%, rgba(0, 0, 0, 1) 100%)"
