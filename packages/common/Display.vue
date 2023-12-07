@@ -120,7 +120,7 @@
 
         emit("update:color", state.color);
         emit("change", state.color);
-      }, 300);
+      }, 800);
 
       whenever(
         () => props.color,
