@@ -104,7 +104,7 @@
             event.target.value = 0;
           }
 
-          if (key === 3 && event.target.value > 1) {
+          if (key === 3 && (event.target.value > 1 || isNaN(event.target.value))) {
             event.target.value = 1;
           }
 
