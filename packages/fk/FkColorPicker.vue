@@ -7,11 +7,11 @@
         </span>
       </div>
       <Palette v-if="!advancePanelShow" @change="onCompactChange" />
-      <Board v-if="advancePanelShow" :color="state.color" @change="onBoardChange" />
-      <Hue v-if="advancePanelShow" :color="state.color" @change="onHueChange" />
-      <Lightness v-if="!advancePanelShow" :color="state.color" @change="onLightChange" />
-      <Alpha v-if="!disableAlpha" :color="state.color" @change="onAlphaChange" />
-      <Display :color="state.color" :disable-alpha="disableAlpha" />
+      <Board v-if="advancePanelShow" :color="(state.color as Color)" @change="onBoardChange" />
+      <Hue v-if="advancePanelShow" :color="(state.color as Color)" @change="onHueChange" />
+      <Lightness v-if="!advancePanelShow" :color="(state.color as Color)" @change="onLightChange" />
+      <Alpha v-if="!disableAlpha" :color="(state.color as Color)" @change="onAlphaChange" />
+      <Display :color="(state.color as Color)" :disable-alpha="disableAlpha" />
       <History
         :round="roundHistory"
         :colors="historyColors"

@@ -3,7 +3,9 @@
     ref="boardElement"
     :class="['vc-saturation', { 'vc-saturation__chrome': round, 'vc-saturation__hidden': hide }]"
     :style="{ backgroundColor: state.hueColor }"
-    @click="onClickBoard"
+    @mousedown="onClickBoard"
+    @mousemove="onDrag"
+    @mouseup="onDragEnd"
   >
     <div class="vc-saturation__white"></div>
     <div class="vc-saturation__black"></div>
@@ -19,7 +21,6 @@
   import { clamp, Color } from "../utils/color";
   import { tryOnMounted, whenever } from "@vueuse/core";
   import { merge } from "lodash-es";
-  import { DOMUtils } from "@aesoper/normal-utils";
 
   export default defineComponent({
     name: "Board",
@@ -49,7 +50,7 @@
       const cursorLeft = ref(0);
 
       const cursorElement = ref<HTMLElement | null>();
-      const boardElement = ref<HTMLElement | null>();
+      // const boardElement = ref<HTMLElement | null>();
 
       const getCursorStyle = computed(() => {
         return {
@@ -66,12 +67,20 @@
         }
       };
 
-      const onClickBoard = (event: Event) => {
-        const target = event.target;
+      let mousedown = false;
+      const onClickBoard = (event: MouseEvent) => {
+        mousedown = true;
+        handleDrag(event as MouseEvent);
+      };
 
-        if (target !== boardElement.value) {
+      const onDrag = (event: MouseEvent) => {
+        if (mousedown) {
           handleDrag(event as MouseEvent);
         }
+      };
+
+      const onDragEnd = () => {
+        mousedown = false;
       };
 
       const handleDrag = (event: MouseEvent) => {
@@ -100,15 +109,6 @@
 
       tryOnMounted(() => {
         if (instance && instance.vnode.el && cursorElement.value) {
-          DOMUtils.triggerDragEvent(cursorElement.value, {
-            drag: (event: Event) => {
-              handleDrag(event as MouseEvent);
-            },
-            end: (event) => {
-              handleDrag(event as MouseEvent);
-            },
-          });
-
           nextTick(() => {
             updatePosition();
           });
@@ -128,7 +128,7 @@
         { deep: true }
       );
 
-      return { state, cursorElement, getCursorStyle, onClickBoard };
+      return { state, cursorElement, getCursorStyle, onClickBoard, onDrag, onDragEnd };
     },
   });
 </script>

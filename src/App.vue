@@ -1,11 +1,15 @@
 <template>
-  <div :style="bg" class="bg">{{ color }}</div>
+  <div :style="bg" class="bg">
+    <span>{{ color }}</span>
+  </div>
 
-  <div :style="bgline" class="bg"> {{ gradientColor }} </div>
+  <div :style="bgline" class="bg">
+    <span>{{ gradientColor }}</span>
+  </div>
 
   <div class="main">
     <div class="color-pickers">
-      <ColorPicker v-model:pureColor="color" :picker-container="container" />
+      <ColorPicker v-model:pureColor="color" :picker-container="container" autoClose />
       <ColorPicker v-model:pureColor="color" shape="circle" pickerType="chrome" />
       <ColorPicker v-model:gradientColor="gradientColor" useType="gradient" />
 
@@ -74,7 +78,7 @@
   };
 </script>
 
-<style>
+<style lang="scss">
   body,
   html {
     margin: 0;
@@ -98,5 +102,12 @@
     color: #fff;
     font-size: 24px;
     padding: 40px 0;
+
+    & > span {
+      display: inline-block;
+      background-color: rgba($color: #000, $alpha: 0.8);
+      padding: 2px 6px;
+      border-radius: 4px;
+    }
   }
 </style>

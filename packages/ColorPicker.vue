@@ -91,6 +91,7 @@
     },
     debounce: propTypes.number.def(100),
     theme: propTypes.oneOf(["white", "black"]).def("white"),
+    autoClose: propTypes.bool.def(false),
   };
 
   type ColorPickerProps = Partial<ExtractPropTypes<typeof colorPickerProps>>;
@@ -348,10 +349,12 @@
 
       const onColorChange = (v: Color) => {
         colorInstance.value = v;
-
         state.pureColor = v.toString(props.format);
-
         emitColorChange();
+
+        if (!props.isWidget && props.autoClose) {
+          onHidePicker();
+        }
       };
 
       const emitColorChange = useDebounceFn(() => {
@@ -371,10 +374,6 @@
 
       tryOnMounted(() => {
         parseGradientColor();
-        // onInit();
-
-        // emitColorChange();
-        // onGradientChange();
       });
 
       whenever(

@@ -6,7 +6,7 @@
     <template v-if="inputType === 'hex'">
       <div style="display: flex; flex: 1; gap: 4px; height: 100%">
         <div class="vc-color-input">
-          <input :value="state.hex" @input="onInputChange" />
+          <input :value="state.hex" maxlength="6" @input="onInputChange" @blur="onBlurChange" />
         </div>
         <div class="vc-alpha-input" v-if="!disableAlpha">
           <input class="vc-alpha-input__inner" :value="state.alpha" @input="onAlphaBlur" />
@@ -85,9 +85,21 @@
           state.color.alpha = opacity;
         }
 
-        emit("update:color", state.color);
         emit("change", state.color);
       }, 300);
+
+      const onBlurChange = useDebounceFn((event) => {
+        if (inputType.value === "hex" && state.color) {
+          const _hex = event.target.value.replace("#", "");
+          if (tinycolor(_hex).isValid()) {
+            state.color.hex = _hex;
+          } else {
+            state.color.hex = "000000";
+            event.target.value = "000000";
+          }
+          emit("change", state.color);
+        }
+      }, 100);
 
       const onInputChange = useDebounceFn((event, key?: number) => {
         if (!event.target.value) {
@@ -97,7 +109,9 @@
         if (inputType.value === "hex") {
           const _hex = event.target.value.replace("#", "");
           if (tinycolor(_hex).isValid() && state.color) {
-            state.color.hex = _hex;
+            if (_hex.length === 6) {
+              state.color.hex = _hex;
+            }
           }
         } else if (key !== undefined && state.rgba && state.color) {
           if (event.target.value < 0) {
@@ -145,7 +159,15 @@
         { deep: true }
       );
 
-      return { state, getBgColorStyle, inputType, onInputTypeChange, onAlphaBlur, onInputChange };
+      return {
+        state,
+        getBgColorStyle,
+        inputType,
+        onInputTypeChange,
+        onAlphaBlur,
+        onInputChange,
+        onBlurChange,
+      };
     },
   });
 </script>
