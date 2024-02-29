@@ -16,11 +16,7 @@
           />
         </div>
       </div>
-      <Display
-        :color="(state.color as Color)"
-        :disable-alpha="disableAlpha"
-        @change="onInputChange"
-      />
+      <Display :color="(state.color as Color)" :disable-alpha="disableAlpha" />
       <History
         :round="roundHistory"
         :colors="historyColors"

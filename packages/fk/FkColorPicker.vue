@@ -175,16 +175,16 @@
     }
 
     &__header {
-      margin-bottom: 12px;
       z-index: 999;
       text-align: left;
 
       .back {
         border: 2px solid rgba(150, 150, 150, 0.6);
-        border-width: 0 1px 1px 0;
+        border-width: 0 2px 2px 0;
         display: inline-block;
         padding: 4px;
         margin-left: 2px;
+        margin-bottom: 12px;
         transform: rotate(135deg);
       }
     }

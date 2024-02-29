@@ -1,12 +1,14 @@
 <template>
   <div class="vc-display">
     <div class="vc-current-color vc-transparent">
-      <div class="color-cube" :style="getBgColorStyle"></div>
+      <div class="color-cube" :style="getBgColorStyle" @click="onCopyColorStr">
+        <span v-if="copied" class="copy-text">copied</span>
+      </div>
     </div>
     <template v-if="inputType === 'hex'">
       <div style="display: flex; flex: 1; gap: 4px; height: 100%">
         <div class="vc-color-input">
-          <input :value="state.hex" maxlength="6" @input="onInputChange" @blur="onBlurChange" />
+          <input v-model="state.hex" maxlength="8" @input="onInputChange" @blur="onBlurChange" />
         </div>
         <div class="vc-alpha-input" v-if="!disableAlpha">
           <input class="vc-alpha-input__inner" :value="state.alpha" @input="onAlphaBlur" />
@@ -29,7 +31,7 @@
   import { computed, defineComponent, reactive, ref } from "vue";
   import propTypes from "vue-types";
   import { Color } from "../utils/color";
-  import { whenever, useDebounceFn } from "@vueuse/core";
+  import { whenever, useDebounceFn, useClipboard } from "@vueuse/core";
   import tinycolor from "tinycolor2";
 
   export default defineComponent({
@@ -40,11 +42,13 @@
     },
     emits: ["update:color", "change"],
     setup(props, { emit }) {
+      const { copy, copied, isSupported } = useClipboard();
+
       const inputType = ref<"hex" | "rgba">("hex");
       const state = reactive({
         color: props.color,
         hex: props.color?.hex,
-        alpha: Math.floor(props.color?.alpha || 100) + "%",
+        alpha: Math.round(props.color?.alpha || 100) + "%",
         rgba: props.color?.RGB,
         previewBgColor: props.color?.toRgbString(),
       });
@@ -92,10 +96,11 @@
         if (inputType.value === "hex" && state.color) {
           const _hex = event.target.value.replace("#", "");
           if (tinycolor(_hex).isValid()) {
-            state.color.hex = _hex;
+            if ([3, 4].includes(_hex.length)) {
+              state.color.hex = _hex;
+            }
           } else {
             state.color.hex = "000000";
-            event.target.value = "000000";
           }
           emit("change", state.color);
         }
@@ -109,7 +114,7 @@
         if (inputType.value === "hex") {
           const _hex = event.target.value.replace("#", "");
           if (tinycolor(_hex).isValid() && state.color) {
-            if (_hex.length === 6) {
+            if ([6, 8].includes(_hex.length)) {
               state.color.hex = _hex;
             }
           }
@@ -129,19 +134,29 @@
           state.rgba[key] = Number(event.target.value);
           const [r, g, b, a] = state.rgba;
           state.color.hex = tinycolor({ r, g, b }).toHex();
-          state.color.alpha = Math.floor(a * 100);
+          state.color.alpha = Math.round(a * 100);
         }
 
         emit("update:color", state.color);
         emit("change", state.color);
       }, 300);
 
+      const onCopyColorStr = () => {
+        if (isSupported && state.color) {
+          const colorStr =
+            inputType.value === "hex"
+              ? state.color.toString(state.color.alpha === 100 ? "hex6" : "hex8")
+              : state.color.toRgbString();
+          copy(colorStr || "");
+        }
+      };
+
       whenever(
         () => props.color,
         (value: Color) => {
           if (value) {
             state.color = value;
-            state.alpha = Math.floor(state.color.alpha) + "%";
+            state.alpha = Math.round(state.color.alpha) + "%";
             state.hex = state.color.hex;
             state.rgba = state.color.RGB;
           }
@@ -163,10 +178,12 @@
         state,
         getBgColorStyle,
         inputType,
+        copied,
         onInputTypeChange,
         onAlphaBlur,
         onInputChange,
         onBlurChange,
+        onCopyColorStr,
       };
     },
   });
@@ -201,6 +218,7 @@
       .color-cube {
         width: 100%;
         height: 100%;
+        text-align: center;
       }
     }
 
@@ -320,6 +338,12 @@
         border-right: 4px solid transparent;
         margin-top: 2px;
       }
+    }
+
+    .copy-text {
+      font-size: 12px;
+      line-height: 28px;
+      text-align: center;
     }
   }
 </style>
