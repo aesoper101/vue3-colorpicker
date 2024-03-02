@@ -7,11 +7,11 @@
         </span>
       </div>
       <Palette v-if="!advancePanelShow" @change="onCompactChange" />
-      <Board v-if="advancePanelShow" :color="state.color" @change="onBoardChange" />
-      <Hue v-if="advancePanelShow" :color="state.color" @change="onHueChange" />
-      <Lightness v-if="!advancePanelShow" :color="state.color" @change="onLightChange" />
-      <Alpha v-if="!disableAlpha" :color="state.color" @change="onAlphaChange" />
-      <Display :color="state.color" :disable-alpha="disableAlpha" />
+      <Board v-if="advancePanelShow" :color="(state.color as Color)" @change="onBoardChange" />
+      <Hue v-if="advancePanelShow" :color="(state.color as Color)" @change="onHueChange" />
+      <Lightness v-if="!advancePanelShow" :color="(state.color as Color)" @change="onLightChange" />
+      <Alpha v-if="!disableAlpha" :color="(state.color as Color)" @change="onAlphaChange" />
+      <Display :color="(state.color as Color)" :disable-alpha="disableAlpha" />
       <History
         :round="roundHistory"
         :colors="historyColors"
@@ -175,16 +175,16 @@
     }
 
     &__header {
-      margin-bottom: 12px;
       z-index: 999;
       text-align: left;
 
       .back {
         border: 2px solid rgba(150, 150, 150, 0.6);
-        border-width: 0 1px 1px 0;
+        border-width: 0 2px 2px 0;
         display: inline-block;
         padding: 4px;
         margin-left: 2px;
+        margin-bottom: 12px;
         transform: rotate(135deg);
       }
     }

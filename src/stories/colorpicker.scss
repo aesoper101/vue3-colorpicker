@@ -8,3 +8,17 @@
 .demo-mt {
   margin-top: 20px;
 }
+
+.btn-reset {
+  border: 1px solid #aaa;
+  text-align: center;
+  padding: 4px 0;
+  border-radius: 4px;
+  color: #666;
+  font-size: 12px;
+  cursor: pointer;
+
+  &:hover {
+    background-color: #eee;
+  }
+}

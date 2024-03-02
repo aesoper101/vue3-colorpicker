@@ -1,17 +1,22 @@
 <template>
   <div class="vc-chrome-colorPicker">
-    <Board :round="true" :hide="false" :color="state.color" @change="onBoardChange" />
+    <Board :round="true" :hide="false" :color="(state.color as Color)" @change="onBoardChange" />
     <div class="vc-chrome-colorPicker-body">
       <div class="chrome-controls">
         <!-- <div class="chrome-color-wrap transparent">
           <div class="current-color" :style="previewStyle"></div>
         </div> -->
         <div class="chrome-sliders">
-          <Hue size="small" :color="state.color" @change="onHueChange" />
-          <Alpha size="small" :color="state.color" @change="onAlphaChange" v-if="!disableAlpha" />
+          <Hue size="small" :color="(state.color as Color)" @change="onHueChange" />
+          <Alpha
+            size="small"
+            :color="(state.color as Color)"
+            @change="onAlphaChange"
+            v-if="!disableAlpha"
+          />
         </div>
       </div>
-      <Display :color="state.color" :disable-alpha="disableAlpha" />
+      <Display :color="(state.color as Color)" :disable-alpha="disableAlpha" />
       <History
         :round="roundHistory"
         :colors="historyColors"
@@ -87,6 +92,16 @@
         state.color.hue = hue;
       };
 
+      const onInputChange = (color: Color) => {
+        if (color.hex !== undefined) {
+          state.color.hex = color.hex;
+        }
+
+        if (color.alpha !== undefined) {
+          state.color.alpha = color.alpha;
+        }
+      };
+
       const onBoardChange = (saturation: number, brightness: number) => {
         state.color.saturation = saturation;
         state.color.brightness = brightness;
@@ -127,6 +142,7 @@
         onAlphaChange,
         onHueChange,
         onBoardChange,
+        onInputChange,
         onCompactChange,
       };
     },

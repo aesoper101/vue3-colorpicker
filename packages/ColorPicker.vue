@@ -1,13 +1,17 @@
 <template>
   <WrapContainer
-    v-model:active-key="state.activeKey"
     v-if="isWidget"
+    v-model:active-key="state.activeKey"
     :show-tab="useType === 'both'"
-    @change="onActiveKeyChange"
     :style="{ zIndex: zIndex }"
     :theme="theme"
+    @change="onActiveKeyChange"
   >
     <component :is="getComponentName" :key="getComponentName" v-bind="getBindArgs" />
+
+    <div v-if="hasExtra" class="vc-color-extra">
+      <slot name="extra"></slot>
+    </div>
   </WrapContainer>
 
   <template v-if="!isWidget">
@@ -20,15 +24,24 @@
     </div>
 
     <teleport :to="pickerContainer">
-      <div ref="pickerRef" v-show="showPicker" :style="{ zIndex: zIndex }">
+      <div
+        ref="pickerRef"
+        v-show="showPicker"
+        :style="{ zIndex: zIndex }"
+        @mouseleave="onAutoClose"
+      >
         <WrapContainer
-          :show-tab="useType === 'both' && !state.isAdvanceMode"
           v-if="showPicker"
+          :show-tab="useType === 'both' && !state.isAdvanceMode"
+          :theme="theme"
           v-model:active-key="state.activeKey"
           @change="onActiveKeyChange"
-          :theme="theme"
         >
           <component :is="getComponentName" :key="getComponentName" v-bind="getBindArgs" />
+
+          <div v-if="hasExtra" class="vc-color-extra">
+            <slot name="extra"></slot>
+          </div>
         </WrapContainer>
       </div>
     </teleport>
@@ -44,6 +57,7 @@
     provide,
     reactive,
     ref,
+    useSlots,
   } from "vue";
   import { onClickOutside, tryOnMounted, whenever, useDebounceFn } from "@vueuse/core";
   import tinycolor, { ColorInputWithoutInstance } from "tinycolor2";
@@ -91,6 +105,8 @@
     },
     debounce: propTypes.number.def(100),
     theme: propTypes.oneOf(["white", "black"]).def("white"),
+    blurClose: propTypes.bool.def(false),
+    defaultPopup: propTypes.bool.def(false),
   };
 
   type ColorPickerProps = Partial<ExtractPropTypes<typeof colorPickerProps>>;
@@ -115,6 +131,8 @@
         lang: computed(() => Local[props.lang || "ZH-cn"]),
       });
 
+      const hasExtra = !!useSlots().extra;
+
       const state = reactive({
         pureColor: props.pureColor || "",
         activeKey: props.useType === "gradient" ? "gradient" : props.activeKey, //  "pure" | "gradient"
@@ -137,7 +155,7 @@
 
       // Ref
       const colorInstance = ref(instance);
-      const showPicker = ref(false);
+      const showPicker = ref(props.defaultPopup);
       const colorCubeRef = ref<HTMLElement | null>(null);
       const pickerRef = ref<HTMLElement | null>(null);
 
@@ -233,6 +251,16 @@
       const onHidePicker = () => {
         showPicker.value = false;
       };
+
+      const onAutoClose = useDebounceFn(() => {
+        if (!props.isWidget && props.blurClose) {
+          onHidePicker();
+        }
+      }, 100);
+
+      onClickOutside(pickerRef, () => {
+        onHidePicker();
+      });
 
       const parseGradientColor = () => {
         try {
@@ -348,9 +376,7 @@
 
       const onColorChange = (v: Color) => {
         colorInstance.value = v;
-
         state.pureColor = v.toString(props.format);
-
         emitColorChange();
       };
 
@@ -358,10 +384,6 @@
         emit("update:pureColor", state.pureColor);
         emit("pureColorChange", state.pureColor);
       }, props.debounce);
-
-      onClickOutside(pickerRef, () => {
-        onHidePicker();
-      });
 
       const onActiveKeyChange = (key: string) => {
         state.activeKey = key;
@@ -371,10 +393,10 @@
 
       tryOnMounted(() => {
         parseGradientColor();
-        // onInit();
 
-        // emitColorChange();
-        // onGradientChange();
+        if (!popperInstance) {
+          initProper();
+        }
       });
 
       whenever(
@@ -431,12 +453,14 @@
         showPicker,
         colorInstance,
         getBgColorStyle,
-        onColorChange,
-        onShowPicker,
-        onActiveKeyChange,
         getComponentName,
         getBindArgs,
         state,
+        hasExtra,
+        onColorChange,
+        onShowPicker,
+        onActiveKeyChange,
+        onAutoClose,
       };
     },
   });
@@ -470,5 +494,9 @@
       width: 100%;
       height: 100%;
     }
+  }
+
+  .vc-color-extra {
+    margin-top: 10px;
   }
 </style>

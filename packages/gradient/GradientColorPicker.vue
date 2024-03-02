@@ -436,7 +436,7 @@
 
       .back {
         border: 2px solid rgba(150, 150, 150, 0.65);
-        border-width: 0 1px 1px 0;
+        border-width: 0 2px 2px 0;
         display: inline-block;
         padding: 4px;
         margin-left: 2px;
