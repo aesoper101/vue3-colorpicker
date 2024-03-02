@@ -11,8 +11,8 @@ export default {
   component: ColorPicker,
   argTypes: {
     pureColor: {
-      type: { name: "union", value: [{ name: "string" }, { name: "object" }] },
-      description: "tinycolor2.ColorInputWithoutInstance",
+      type: "string",
+      description: "hex string or rgba string",
     },
     gradientColor: {
       type: "string",
@@ -140,7 +140,7 @@ export default {
           summary: "body",
         },
       },
-      description: "the mount node for Picker",
+      description: "The mount node for picker popup",
     },
     theme: {
       type: "string",
@@ -153,10 +153,31 @@ export default {
         },
       },
     },
+    blurClose: {
+      type: "boolean",
+      table: {
+        defaultValue: {
+          summary: false,
+        },
+      },
+      description: "Auto close picker popup when mouse leave (only isWidget is false)",
+    },
+    defaultPopup: {
+      type: "boolean",
+      table: {
+        defaultValue: {
+          summary: false,
+        },
+      },
+      description: "Picker popup is visible by default (only isWidget is false)",
+    },
+    extra: {
+      description: "Add custom template on picker footer, example: rest button",
+    },
   } as Partial<ArgTypes<ColorPickerProps>>,
 } as Meta;
 
-const Template: StoryFn<ColorPickerProps> = (args: ColorPickerProps) => {
+const Template: StoryFn<ColorPickerProps> = (args: ColorPickerProps | any) => {
   return {
     components: { ColorPicker },
     setup() {
@@ -164,12 +185,13 @@ const Template: StoryFn<ColorPickerProps> = (args: ColorPickerProps) => {
       const gradientColor = ref<ColorInput>("");
       return { args: args, pureColor, gradientColor };
     },
-    template:
-      '<div class="demo">' +
-      '<ColorPicker v-model:pureColor="pureColor" v-model:gradientColor="gradientColor" v-bind="args" />' +
-      '<div class="demo-mt">currentColor: {{pureColor}} </div>' +
-      '<div class="demo-mt" v-if="gradientColor">currentGradientColor: {{gradientColor}} </div>' +
-      "</div>",
+    template: `<div class="demo">
+        <ColorPicker v-model:pureColor="pureColor" v-model:gradientColor="gradientColor" v-bind="args">
+          <template v-if="${"extra" in args}" v-slot:extra>${args.extra}</template>
+        </ColorPicker>
+        <div class="demo-mt">currentColor: {{pureColor}} </div>
+        <div class="demo-mt" v-if="gradientColor">currentGradientColor: {{gradientColor}} </div>
+      </div>`,
   };
 };
 
@@ -252,4 +274,11 @@ DisableAlpha.args = {
   isWidget: true,
   pickerType: "fk",
   disableAlpha: true,
+};
+
+export const ExtraSlot: StoryFn<ColorPickerProps | any> = Template.bind({});
+
+ExtraSlot.args = {
+  isWidget: true,
+  extra: `<div class='btn-reset' @click="pureColor='#5d35b0'">Reset</div>`,
 };

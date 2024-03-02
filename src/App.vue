@@ -12,9 +12,7 @@
       <ColorPicker v-model:pureColor="color" :picker-container="container" blurClose />
       <ColorPicker v-model:pureColor="color" shape="circle" pickerType="chrome" defaultPopup>
         <template #extra>
-          <div>
-            <button>rest</button>
-          </div>
+          <div> reset </div>
         </template>
       </ColorPicker>
       <ColorPicker v-model:gradientColor="gradientColor" useType="gradient" />
@@ -34,9 +32,7 @@
           :defaultColors="[]"
         >
           <template #extra>
-            <div>
-              <button class="btn" @click="color = '#444'">rest</button>
-            </div>
+            <div class="btn-reset" @click="color = '#666666'"> reset </div>
           </template>
         </ColorPicker>
         <h3>pickerType: fk</h3>
@@ -128,5 +124,15 @@
       padding: 2px 6px;
       border-radius: 4px;
     }
+  }
+
+  .btn-reset {
+    border: 1px solid #aaa;
+    text-align: center;
+    padding: 4px 0;
+    border-radius: 4px;
+    color: #666;
+    cursor: pointer;
+    font-size: 12px;
   }
 </style>
